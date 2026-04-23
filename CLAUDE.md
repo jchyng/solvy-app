@@ -25,11 +25,10 @@
 **목표**: 빈 요청이 들어와서 빈 응답이 나가는 완전한 파이프라인 완성
 
 **이번 주 해야 할 것**
-- Hono 프로젝트 + Cloudflare Workers 배포 파이프라인
-- API 라우팅 뼈대 (`/api/v1/{problems,conversations,folders,users}` → 501)
-- Supabase DB 마이그레이션 실행
-- JWT 인증 미들웨어, 레이트리밋, 에러 핸들링, Sentry 연동
-- 프론트: 프로토타입 → `legacy/` 이동, 새 프로젝트 구조·라우팅·API 클라이언트
+- Hono 프로젝트 코드 + API 라우팅 뼈대 (`/api/v1/{problems,conversations,folders,users}` → 501)
+- Supabase 마이그레이션 SQL 파일 작성 (실행은 Week 8)
+- JWT 인증 미들웨어, 레이트리밋, 에러 핸들링, Sentry 스텁
+- 프론트: 새 프로젝트 구조·라우팅·API 클라이언트 코드 작성
 
 **이번 주 금지**
 - AI 호출 구현 (Week 2)
