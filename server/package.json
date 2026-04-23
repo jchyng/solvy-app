@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@sentry/cloudflare": "^10.49.0",
@@ -16,6 +17,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260423.1",
     "typescript": "^6.0.3",
+    "vitest": "^4.1.5",
     "wrangler": "^4.84.1"
   }
 }
