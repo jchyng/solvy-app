@@ -1,0 +1,21 @@
+{
+  "name": "solvy-server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sentry/cloudflare": "^10.49.0",
+    "@supabase/supabase-js": "^2.104.0",
+    "hono": "^4.12.14"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260423.1",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.84.1"
+  }
+}
