@@ -11,4 +11,7 @@ export interface Bindings {
   OPENROUTER_API_KEY: string
   MATHPIX_APP_ID: string
   MATHPIX_APP_KEY: string
+  // R2 이미지 스토리지
+  IMAGES_BUCKET: R2Bucket
+  IMAGES_PUBLIC_URL: string
 }
