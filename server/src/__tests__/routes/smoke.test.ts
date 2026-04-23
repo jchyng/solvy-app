@@ -16,6 +16,15 @@ const testEnv = {
   JWT_SECRET: TEST_SECRET,
   RATE_LIMIT_KV: mockKV,
   ENVIRONMENT: 'development',
+  IMAGES_BUCKET: { put: vi.fn() },
+  IMAGES_PUBLIC_URL: 'https://r2.test',
+  SUPABASE_URL: 'https://supabase.test',
+  SUPABASE_SERVICE_KEY: 'test-key',
+  ANTHROPIC_API_KEY: 'test',
+  GEMINI_API_KEY: 'test',
+  OPENROUTER_API_KEY: 'test',
+  MATHPIX_APP_ID: 'test',
+  MATHPIX_APP_KEY: 'test',
 }
 
 async function authed(method: string, path: string, body?: unknown) {
@@ -49,22 +58,7 @@ describe('GET /health', () => {
   })
 })
 
-describe('Problems routes → 501', () => {
-  it('POST /api/v1/problems', async () => {
-    const res = await authed('POST', '/api/v1/problems', {})
-    expect(res.status).toBe(501)
-  })
-
-  it('GET /api/v1/problems/:id', async () => {
-    const res = await authed('GET', '/api/v1/problems/some-id')
-    expect(res.status).toBe(501)
-  })
-
-  it('GET /api/v1/problems/:id/status', async () => {
-    const res = await authed('GET', '/api/v1/problems/some-id/status')
-    expect(res.status).toBe(501)
-  })
-})
+// Problems routes tested in __tests__/routes/problems.test.ts
 
 describe('Conversations routes → 501', () => {
   it('GET /api/v1/conversations', async () => {
