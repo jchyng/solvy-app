@@ -3,7 +3,7 @@ import { useUserStore } from '@/stores/userStore'
 import { api } from '@/services/api'
 
 const mockFetch = vi.fn()
-global.fetch = mockFetch
+globalThis.fetch = mockFetch
 
 beforeEach(() => {
   vi.clearAllMocks()

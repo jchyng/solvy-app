@@ -62,6 +62,20 @@
 - [x] `npm run type-check` → 에러 없음 (로컬 검증 완료)
 - [x] `npm run build` → 성공 (로컬 검증 완료)
 
+## TDD 체크리스트
+
+- [x] Vitest 설정 (`vitest.config.ts` 루트, `server/vitest.config.ts`)
+- [x] `AppError` 클래스 및 `Errors` factory 단위 테스트 — `server/src/__tests__/lib/errors.test.ts`
+- [x] `authMiddleware` 단위 테스트 (valid/missing/invalid token) — `server/src/__tests__/middleware/auth.test.ts`
+- [x] `rateLimitMiddleware` 단위 테스트 (통과·초과·헤더) — `server/src/__tests__/middleware/rateLimit.test.ts`
+- [x] `errorHandler` 단위 테스트 (AppError·일반 Error) — `server/src/__tests__/middleware/errorHandler.test.ts`
+- [x] v1 라우트 스모크 테스트 (전 엔드포인트 501 확인) — `server/src/__tests__/routes/smoke.test.ts`
+- [x] `useUserStore` 단위 테스트 — `src/__tests__/stores/userStore.test.ts`
+- [x] `useConversationStore` 단위 테스트 — `src/__tests__/stores/conversationStore.test.ts`
+- [x] API 클라이언트 단위 테스트 (헤더·메서드) — `src/__tests__/services/api.test.ts`
+- [x] `cd server && npm test` → 30 tests PASS
+- [x] `npm test` (루트) → 12 tests PASS
+
 ## 완료 판정
 
 백엔드와 프론트엔드 **코드가 타입 체크·빌드를 통과**하고,
