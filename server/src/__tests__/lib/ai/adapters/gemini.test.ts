@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { GeminiAdapter } from '../../../../lib/ai/adapters/gemini.js'
-import { LLMError } from '../../../../lib/ai/types.js'
 
 const baseParams = {
   messages: [{ role: 'user' as const, content: 'Solve x^2 = 4' }],

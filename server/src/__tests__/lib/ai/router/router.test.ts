@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { callWithFallback } from '../../../../lib/ai/router/router.js'
 import type { RouterDeps } from '../../../../lib/ai/router/router.js'
 import { LLMError } from '../../../../lib/ai/types.js'
@@ -140,8 +140,8 @@ describe('callWithFallback', () => {
 
     const calls = (deps.tracker.record as ReturnType<typeof vi.fn>).mock.calls;
     const successCall = calls.find((c) => c[0].response != null);
-    expect(successCall[0].fallbackDepth).toBe(1);
-    expect(successCall[0].provider).toBe('openrouter');
+    expect(successCall?.[0].fallbackDepth).toBe(1);
+    expect(successCall?.[0].provider).toBe('openrouter');
   });
 
   it('all providers fail → throws last LLMError', async () => {

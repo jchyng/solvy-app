@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { MathpixAdapter } from '../../../../lib/ai/adapters/mathpix.js'
-import { LLMError } from '../../../../lib/ai/types.js'
 
 const IMAGE_URI = 'data:image/jpeg;base64,/9j/4AAQ...'
 

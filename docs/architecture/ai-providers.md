@@ -212,6 +212,27 @@ interface UnifiedLLMResponse {
 
 ---
 
+## 역할별 예상 비용 추정치
+
+> 설계 시점 기준 단가. 실측은 Week 8에서 진행. 캐싱 적중 시 analyze/chat 비용 최대 90% 감소.
+
+| 역할 | 주 모델 | 예상 입력 토큰 | 예상 출력 토큰 | 호출당 예상 비용 |
+|---|---|---|---|---|
+| ocrPrinted | gemini-1.5-flash | ~500 | ~200 | ~$0.00006 |
+| classify | gemini-1.5-flash | ~400 | ~100 | ~$0.00003 |
+| **analyze** | **claude-sonnet-4-6** | **~1,500** | **~800** | **~$0.017** |
+| **chat** | **claude-sonnet-4-6** | **~2,000** | **~600** | **~$0.015** |
+| generateSimilar | deepseek/deepseek-chat | ~1,200 | ~1,000 | ~$0.001 |
+| nameNote | gemini-1.5-flash | ~500 | ~50 | ~$0.00005 |
+| ocrHandwriting | mathpix-ocr-v3 | - | - | ~$0.004 (per image) |
+
+**월 추정 (MAU 1,000 · 1일 3문제 · 5회 채팅):**
+- analyze: 1,000 × 30 × $0.017 = ~$510/월
+- chat: 1,000 × 30 × 5 × $0.015 = ~$2,250/월 (캐싱 적중 시 ~$225)
+- OCR+분류: 무시 가능 수준
+
+---
+
 ## 폴백 체인 작동 원칙
 
 - 주 프로바이더 장애·timeout 시 순차적으로 폴백
