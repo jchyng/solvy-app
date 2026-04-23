@@ -33,5 +33,6 @@ export interface Message {
   content: string
   structured_payload: unknown | null
   follow_up_questions: Array<{ id: string; label: string }>
+  idempotency_key: string | null
   created_at: string
 }

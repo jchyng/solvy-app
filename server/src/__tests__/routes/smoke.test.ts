@@ -60,17 +60,10 @@ describe('GET /health', () => {
 
 // Problems routes tested in __tests__/routes/problems.test.ts
 
-describe('Conversations routes → 501', () => {
-  it('GET /api/v1/conversations', async () => {
-    const res = await authed('GET', '/api/v1/conversations')
-    expect(res.status).toBe(501)
-  })
+// GET /api/v1/conversations, GET /api/v1/conversations/:id, POST /:id/messages
+// — Week 4에서 구현 완료. 상세 테스트는 conversations.test.ts 참조.
 
-  it('GET /api/v1/conversations/:id', async () => {
-    const res = await authed('GET', '/api/v1/conversations/some-id')
-    expect(res.status).toBe(501)
-  })
-
+describe('Conversations routes (Week 4 미구현 엔드포인트) → 501', () => {
   it('PATCH /api/v1/conversations/:id', async () => {
     const res = await authed('PATCH', '/api/v1/conversations/some-id', {})
     expect(res.status).toBe(501)

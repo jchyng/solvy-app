@@ -43,3 +43,22 @@ export interface MessageResponse {
   follow_up_questions: FollowUpQuestion[]
   created_at: string
 }
+
+export interface ConversationWithMessages {
+  id: string
+  problem_session_id: string
+  title: string | null
+  auto_title: string | null
+  is_favorite: boolean
+  last_message_at: string
+  created_at: string
+  messages: MessageResponse[]
+}
+
+export interface SSEEvent {
+  type: 'token' | 'done' | 'error'
+  content?: string
+  message_id?: string
+  follow_up_questions?: FollowUpQuestion[]
+  message?: string
+}
