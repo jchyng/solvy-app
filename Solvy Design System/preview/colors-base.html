@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 20px; background: var(--bg); font-family: var(--font-sans); }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .swatch { border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+  .color-block { height: 72px; }
+  .label { padding: 10px 12px; background: var(--bg-elevated); }
+  .name { font-size: 12px; font-weight: 600; color: var(--ink); }
+  .hex  { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .section-title { font-family: var(--font-serif); font-style: italic; font-size: 13px; color: var(--ink-4); margin: 0 0 10px; }
+</style>
+</head>
+<body>
+<p class="section-title">Surfaces</p>
+<div class="grid">
+  <div class="swatch">
+    <div class="color-block" style="background:#F5F2EC;"></div>
+    <div class="label"><div class="name">bg</div><div class="hex">#F5F2EC</div></div>
+  </div>
+  <div class="swatch">
+    <div class="color-block" style="background:#FBF9F4;"></div>
+    <div class="label"><div class="name">bg-elevated</div><div class="hex">#FBF9F4</div></div>
+  </div>
+  <div class="swatch">
+    <div class="color-block" style="background:#EEEAE1;"></div>
+    <div class="label"><div class="name">bg-sunken</div><div class="hex">#EEEAE1</div></div>
+  </div>
+</div>
+</body>
+</html>

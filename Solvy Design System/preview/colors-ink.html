@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 20px; background: var(--bg); font-family: var(--font-sans); }
+  .row { display: flex; gap: 8px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .row:last-child { border-bottom: none; }
+  .dot { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); flex-shrink: 0; }
+  .meta { flex: 1; }
+  .name { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .hex  { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+  .sample { font-size: 14px; text-align: right; }
+  .section-title { font-family: var(--font-serif); font-style: italic; font-size: 13px; color: var(--ink-4); margin: 0 0 6px; }
+</style>
+</head>
+<body>
+<p class="section-title">Ink Scale</p>
+<div class="row">
+  <div class="dot" style="background:#1A1814;"></div>
+  <div class="meta"><div class="name">ink</div><div class="hex">#1A1814</div></div>
+  <div class="sample" style="color:#1A1814;">주요 텍스트</div>
+</div>
+<div class="row">
+  <div class="dot" style="background:#3C3932;"></div>
+  <div class="meta"><div class="name">ink-2</div><div class="hex">#3C3932</div></div>
+  <div class="sample" style="color:#3C3932;">본문 텍스트</div>
+</div>
+<div class="row">
+  <div class="dot" style="background:#6B675D;"></div>
+  <div class="meta"><div class="name">ink-3</div><div class="hex">#6B675D</div></div>
+  <div class="sample" style="color:#6B675D;">보조 텍스트</div>
+</div>
+<div class="row">
+  <div class="dot" style="background:#9E998E;"></div>
+  <div class="meta"><div class="name">ink-4</div><div class="hex">#9E998E</div></div>
+  <div class="sample" style="color:#9E998E;">비활성 / 힌트</div>
+</div>
+</body>
+</html>

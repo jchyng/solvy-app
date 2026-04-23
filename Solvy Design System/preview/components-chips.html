@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 20px 24px; background: var(--bg); font-family: var(--font-sans); }
+  .section-title { font-family: var(--font-serif); font-style: italic; font-size: 12px; color: var(--ink-4); margin: 0 0 10px; }
+  .group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+  <p class="section-title">Chips & Tags</p>
+  <div class="group">
+    <!-- Subject chip -->
+    <span style="padding:3px 10px; background:color-mix(in srgb,var(--accent) 10%,transparent); color:var(--accent); border-radius:9999px; font-size:12px; font-weight:500;">수학Ⅱ</span>
+    <span style="padding:3px 10px; background:color-mix(in srgb,var(--line) 50%,transparent); color:var(--ink-3); border-radius:9999px; font-size:12px;">수능 2024</span>
+    <span style="padding:3px 10px; background:color-mix(in srgb,var(--line) 50%,transparent); color:var(--ink-3); border-radius:9999px; font-size:12px;">3점</span>
+    <span style="padding:3px 10px; background:color-mix(in srgb,var(--warn) 12%,transparent); color:var(--warn); border-radius:9999px; font-size:12px;">어려움</span>
+  </div>
+  <p class="section-title">Suggested Chips (scrollable row)</p>
+  <div class="group">
+    <button style="white-space:nowrap; padding:6px 14px; background:var(--bg-elevated); border:1px solid var(--line); border-radius:9999px; font-size:13px; color:var(--ink-2); cursor:pointer; font-family:var(--font-sans);">판별식이 뭔가요?</button>
+    <button style="white-space:nowrap; padding:6px 14px; background:var(--bg-elevated); border:1px solid var(--line); border-radius:9999px; font-size:13px; color:var(--ink-2); cursor:pointer; font-family:var(--font-sans);">다른 방법이 있나요?</button>
+    <button style="white-space:nowrap; padding:6px 14px; background:var(--bg-elevated); border:1px solid var(--line); border-radius:9999px; font-size:13px; color:var(--ink-2); cursor:pointer; font-family:var(--font-sans);">제가 설명해볼게요</button>
+  </div>
+  <p class="section-title">Difficulty Badge</p>
+  <div class="group">
+    <span style="display:inline-flex; align-items:center; gap:4px; padding:4px 10px; background:var(--bg-elevated); border:1px solid var(--line); border-radius:9999px; font-size:12px; color:var(--ink-3);">
+      <span style="width:6px; height:6px; border-radius:50%; background:var(--accent); display:inline-block;"></span> 보통
+    </span>
+    <span style="display:inline-flex; align-items:center; gap:4px; padding:4px 10px; background:var(--bg-elevated); border:1px solid var(--line); border-radius:9999px; font-size:12px; color:var(--ink-3);">
+      <span style="width:6px; height:6px; border-radius:50%; background:var(--warn); display:inline-block;"></span> 어려움
+    </span>
+  </div>
+</body>
+</html>

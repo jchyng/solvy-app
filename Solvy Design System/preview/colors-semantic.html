@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 20px; background: var(--bg); font-family: var(--font-sans); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .swatch { border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+  .color-block { height: 64px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; }
+  .label { padding: 8px 12px; background: var(--bg-elevated); }
+  .name { font-size: 12px; font-weight: 600; color: var(--ink); }
+  .hex  { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .section-title { font-family: var(--font-serif); font-style: italic; font-size: 13px; color: var(--ink-4); margin: 0 0 10px; }
+</style>
+</head>
+<body>
+<p class="section-title">Semantic Colors</p>
+<div class="grid">
+  <div class="swatch">
+    <div class="color-block" style="background:#3D5C4B; color:white;">Forest Green</div>
+    <div class="label"><div class="name">accent</div><div class="hex">#3D5C4B</div></div>
+  </div>
+  <div class="swatch">
+    <div class="color-block" style="background:#E0E8DF; color:#3D5C4B;">Soft Tint</div>
+    <div class="label"><div class="name">accent-soft</div><div class="hex">#E0E8DF</div></div>
+  </div>
+  <div class="swatch">
+    <div class="color-block" style="background:#A65F2E; color:white;">Amber</div>
+    <div class="label"><div class="name">warn</div><div class="hex">#A65F2E</div></div>
+  </div>
+  <div class="swatch">
+    <div class="color-block" style="background:#E2DDD0; color:#6B675D;">Separator</div>
+    <div class="label"><div class="name">line</div><div class="hex">#E2DDD0</div></div>
+  </div>
+</div>
+</body>
+</html>

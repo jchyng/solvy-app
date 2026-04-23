@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 20px 24px; background: var(--bg); font-family: var(--font-sans); display: flex; flex-direction: column; gap: 12px; }
+  .section-title { font-family: var(--font-serif); font-style: italic; font-size: 12px; color: var(--ink-4); margin: 0; }
+</style>
+</head>
+<body>
+  <div class="section-title">Chat Bubbles</div>
+
+  <!-- AI message -->
+  <div style="display:flex; justify-content:flex-start;">
+    <div style="max-width:85%; background:var(--bg-elevated); border:1px solid var(--line); border-radius:18px 18px 18px 4px; padding:12px 16px; font-size:14px; color:var(--ink-2); line-height:1.6;">
+      이차방정식 풀이에 어떤 방법을 생각하고 있나요?
+    </div>
+  </div>
+
+  <!-- User message -->
+  <div style="display:flex; justify-content:flex-end;">
+    <div style="max-width:85%; background:var(--ink); border-radius:18px 18px 4px 18px; padding:12px 16px; font-size:14px; color:var(--bg); line-height:1.6;">
+      근의 공식을 써서 풀면 될 것 같아요.
+    </div>
+  </div>
+
+  <!-- AI with math -->
+  <div style="display:flex; justify-content:flex-start;">
+    <div style="max-width:85%; background:var(--bg-elevated); border:1px solid var(--line); border-radius:18px 18px 18px 4px; padding:12px 16px; font-size:14px; color:var(--ink-2); line-height:1.6;">
+      좋아요! 그럼 판별식 <span style="font-family:var(--font-mono); font-size:12px; background:var(--accent-soft); padding:1px 6px; border-radius:4px; color:var(--ink);">D = b²−4ac</span> 는 얼마인가요?
+    </div>
+  </div>
+
+  <!-- Typing indicator -->
+  <div style="display:flex; justify-content:flex-start;">
+    <div style="background:var(--bg-elevated); border:1px solid var(--line); border-radius:18px; padding:12px 16px; display:flex; align-items:center; gap:5px;">
+      <span style="width:7px; height:7px; border-radius:50%; background:var(--ink-3); display:inline-block; animation:pulse 1.4s infinite;"></span>
+      <span style="width:7px; height:7px; border-radius:50%; background:var(--ink-3); display:inline-block; animation:pulse 1.4s 0.2s infinite;"></span>
+      <span style="width:7px; height:7px; border-radius:50%; background:var(--ink-3); display:inline-block; animation:pulse 1.4s 0.4s infinite;"></span>
+    </div>
+  </div>
+  <style>
+    @keyframes pulse { 0%,80%,100%{opacity:0.3} 40%{opacity:1} }
+  </style>
+</body>
+</html>

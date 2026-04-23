@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 20px 24px; background: var(--bg); font-family: var(--font-mono); }
+  .row { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+  .row:last-child { border-bottom: none; margin-bottom: 0; }
+  .meta { font-size: 10px; color: var(--ink-4); margin-bottom: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .math-block { background: var(--bg-sunken); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; text-align: center; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="meta">Equation display · 18px</div>
+    <div class="math-block" style="font-size:18px; color:var(--ink);">x = (-b ± √(b²−4ac)) / 2a</div>
+  </div>
+  <div class="row">
+    <div class="meta">Inline code · 13px · accent-soft bg</div>
+    <div style="font-size:15px; color:var(--ink-2); line-height:1.6;">
+      판별식 <span style="background:var(--accent-soft); color:var(--ink); padding:1px 6px; border-radius:4px; font-size:13px;">D = b²−4ac</span> 을 계산합니다.
+    </div>
+  </div>
+  <div class="row">
+    <div class="meta">Mono label · 11px · tracking 0.2em · uppercase</div>
+    <div style="font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ink-3); font-weight:500;">Expert Insight &nbsp;·&nbsp; Step 01 &nbsp;·&nbsp; Final Answer</div>
+  </div>
+  <div class="row">
+    <div class="meta">Answer display · 28px</div>
+    <div style="font-size:28px; color:var(--ink); text-align:center;">x = 2, x = −3</div>
+  </div>
+</body>
+</html>

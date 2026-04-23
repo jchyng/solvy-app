@@ -1,0 +1,345 @@
+/*
+ * Solvy Design System — Colors & Typography
+ * Source: src/index.css (codebase)
+ * Fonts: Instrument Serif (Google Fonts), Pretendard Variable (CDN), JetBrains Mono (Google Fonts)
+ */
+
+/* ─── Font Imports ─────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* Pretendard Variable — Korean sans-serif */
+@font-face {
+  font-family: 'Pretendard Variable';
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2') format('woff2-variations');
+}
+
+/* ─── Base Color Tokens ────────────────────────────────────── */
+:root {
+  /* Surface / Background hierarchy */
+  --bg:           #F5F2EC;   /* Page background — warm off-white parchment */
+  --bg-elevated:  #FBF9F4;   /* Cards, panels — slightly lighter */
+  --bg-sunken:    #EEEAE1;   /* Inputs, code blocks, recessed areas */
+
+  /* Ink / Text hierarchy */
+  --ink:   #1A1814;   /* Primary text, headings — warm near-black */
+  --ink-2: #3C3932;   /* Secondary text, body copy */
+  --ink-3: #6B675D;   /* Tertiary text, placeholders, labels */
+  --ink-4: #9E998E;   /* Disabled, hints, faint metadata */
+
+  /* Structural */
+  --line:  #E2DDD0;   /* Borders, dividers — warm separator */
+
+  /* Semantic / Brand */
+  --accent:      #3D5C4B;   /* Forest green — primary action, highlights */
+  --accent-soft: #E0E8DF;   /* Accent tint — code bg, tag bg */
+  --warn:        #A65F2E;   /* Amber/terracotta — warnings, errors */
+
+  /* ─── Typography ─────────────────────────────────────────── */
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans:  'Pretendard Variable', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+  --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ─── Type Scale ─────────────────────────────────────────── */
+  --text-brand:  36px;   /* "Solvy" logo / hero display */
+  --text-h1:     28px;   /* Page-level heading */
+  --text-h2:     20px;   /* Section heading */
+  --text-h3:     17px;   /* Sub-section heading */
+  --text-body:   15px;   /* Standard body / UI text */
+  --text-small:  13px;   /* Supporting copy, captions */
+  --text-xs:     11px;   /* Mono labels, metadata, badges */
+
+  /* ─── Line Heights ───────────────────────────────────────── */
+  --leading-tight:  1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  /* ─── Letter Spacing ─────────────────────────────────────── */
+  --tracking-tight:  -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.05em;
+  --tracking-widest: 0.2em;   /* Mono uppercase labels */
+
+  /* ─── Corner Radii ───────────────────────────────────────── */
+  --radius-sm:   4px;    /* Inline code */
+  --radius-md:   12px;   /* Math blocks, small cards */
+  --radius-lg:   16px;   /* Icon containers */
+  --radius-xl:   22px;   /* Main cards */
+  --radius-2xl:  32px;   /* Upload drop zone, hero cards */
+  --radius-full: 9999px; /* Pills, chips, avatars */
+
+  /* ─── Spacing Scale ──────────────────────────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;   /* Standard horizontal padding */
+  --space-5:  20px;
+  --space-6:  24px;   /* Section gap */
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* ─── Shadows ─────────────────────────────────────────────── */
+  --shadow-none: none;
+  --shadow-sm:   0 1px 3px rgba(26, 24, 20, 0.08);
+  --shadow-md:   0 2px 8px rgba(26, 24, 20, 0.10);
+  /* Note: borders (1px --line) are preferred over shadows for elevation */
+
+  /* ─── Transitions ─────────────────────────────────────────── */
+  --transition-fast:   150ms ease;
+  --transition-normal: 200ms ease;
+}
+
+/* ─── Dark Mode Overrides ─────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:           #13120F;
+    --bg-elevated:  #1C1B17;
+    --bg-sunken:    #0E0D0B;
+
+    --ink:   #F0ECE0;
+    --ink-2: #D4D0C3;
+    --ink-3: #95907F;
+    --ink-4: #6B6757;
+
+    --line:  #2A2822;
+
+    --accent:      #8FB89F;
+    --accent-soft: #1F2A23;
+    --warn:        #D4925E;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ─── Semantic / Component-Level Vars ────────────────────────
+   These map design intent to token values.
+   Use these in components rather than raw tokens.
+ ──────────────────────────────────────────────────────────── */
+:root {
+  /* Text roles */
+  --text-primary:     var(--ink);
+  --text-secondary:   var(--ink-2);
+  --text-tertiary:    var(--ink-3);
+  --text-placeholder: var(--ink-4);
+  --text-accent:      var(--accent);
+  --text-warn:        var(--warn);
+  --text-inverse:     var(--bg);  /* Text on dark (ink-colored) backgrounds */
+
+  /* Surface roles */
+  --surface-page:     var(--bg);
+  --surface-card:     var(--bg-elevated);
+  --surface-sunken:   var(--bg-sunken);
+  --surface-inverse:  var(--ink);  /* Dark button backgrounds */
+
+  /* Border roles */
+  --border-default:   var(--line);
+  --border-focus:     var(--ink-3);
+  --border-accent:    var(--accent);
+
+  /* Interactive */
+  --interactive-primary:       var(--accent);
+  --interactive-primary-text:  #FFFFFF;
+  --interactive-inverse:       var(--ink);
+  --interactive-inverse-text:  var(--bg);
+}
+
+/* ─── Base Element Styles ─────────────────────────────────── */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+  background-color: var(--surface-page);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Semantic Type Classes ───────────────────────────────── */
+
+/* Brand / Display */
+.solvy-brand {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--text-brand);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+}
+
+/* Headings */
+.solvy-h1 {
+  font-family: var(--font-sans);
+  font-size: var(--text-h1);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--text-primary);
+}
+.solvy-h2 {
+  font-family: var(--font-sans);
+  font-size: var(--text-h2);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--text-primary);
+}
+.solvy-h3 {
+  font-family: var(--font-sans);
+  font-size: var(--text-h3);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Section label (i. Intent style) */
+.solvy-section-label {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--text-small);
+  color: var(--text-placeholder);
+  letter-spacing: var(--tracking-normal);
+}
+
+/* Body */
+.solvy-body {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+}
+.solvy-body-sm {
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+}
+
+/* Mono label */
+.solvy-mono-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+/* Code / Math inline */
+.solvy-code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background-color: var(--accent-soft);
+  padding: 0.125rem 0.25rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+}
+
+/* ─── Card Base ───────────────────────────────────────────── */
+.solvy-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+}
+.solvy-card-sunken {
+  background-color: var(--surface-sunken);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+}
+
+/* ─── Button Base ─────────────────────────────────────────── */
+.solvy-btn-primary {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: 500;
+  background-color: var(--surface-inverse);
+  color: var(--text-inverse);
+  border-radius: var(--radius-full);
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+.solvy-btn-primary:active { transform: scale(0.95); }
+.solvy-btn-primary:disabled { opacity: 0.5; }
+
+.solvy-btn-accent {
+  background-color: var(--interactive-primary);
+  color: var(--interactive-primary-text);
+  border-radius: var(--radius-full);
+  padding: 12px 24px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.solvy-btn-ghost {
+  background: transparent;
+  color: var(--text-tertiary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  padding: 8px 16px;
+  font-size: var(--text-small);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+.solvy-btn-ghost:hover {
+  background-color: var(--surface-sunken);
+  color: var(--text-primary);
+}
+
+/* ─── Chip / Tag ──────────────────────────────────────────── */
+.solvy-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  font-size: var(--text-small);
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+.solvy-chip:hover { background-color: var(--surface-sunken); }
+
+.solvy-chip-accent {
+  background-color: var(--accent-soft);
+  color: var(--accent);
+  border: none;
+}
+
+/* ─── Input ───────────────────────────────────────────────── */
+.solvy-input {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  background-color: var(--surface-sunken);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  padding: 14px 20px;
+  color: var(--text-primary);
+  width: 100%;
+  outline: none;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+.solvy-input::placeholder { color: var(--text-placeholder); }
+.solvy-input:focus {
+  background-color: var(--surface-card);
+  border-color: var(--border-focus);
+}
+
+/* ─── Math Block ──────────────────────────────────────────── */
+.solvy-math-block {
+  background-color: var(--surface-sunken);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 20px 16px;
+  overflow-x: auto;
+  text-align: center;
+  font-family: var(--font-mono);
+}

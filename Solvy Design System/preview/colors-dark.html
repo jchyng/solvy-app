@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 20px; background: #13120F; font-family: var(--font-sans); }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+  .swatch { border-radius: 12px; overflow: hidden; border: 1px solid #2A2822; }
+  .color-block { height: 52px; }
+  .label { padding: 8px 10px; background: #1C1B17; }
+  .name { font-size: 11px; font-weight: 600; color: #F0ECE0; }
+  .hex  { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6B6757; margin-top: 2px; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 13px; color: #6B6757; margin: 0 0 10px; }
+  .row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .sem { border-radius: 8px; padding: 6px 10px; border: 1px solid #2A2822; font-size: 11px; font-weight: 500; }
+</style>
+</head>
+<body>
+<p class="section-title">Dark Mode</p>
+<div class="grid">
+  <div class="swatch"><div class="color-block" style="background:#13120F;"></div><div class="label"><div class="name">bg</div><div class="hex">#13120F</div></div></div>
+  <div class="swatch"><div class="color-block" style="background:#1C1B17;"></div><div class="label"><div class="name">bg-elevated</div><div class="hex">#1C1B17</div></div></div>
+  <div class="swatch"><div class="color-block" style="background:#0E0D0B;"></div><div class="label"><div class="name">bg-sunken</div><div class="hex">#0E0D0B</div></div></div>
+</div>
+<div class="row" style="margin-bottom:8px;">
+  <div class="sem" style="background:#1C1B17; color:#F0ECE0; border-color:#2A2822;">ink #F0ECE0</div>
+  <div class="sem" style="background:#1C1B17; color:#D4D0C3; border-color:#2A2822;">ink-2 #D4D0C3</div>
+  <div class="sem" style="background:#1C1B17; color:#95907F; border-color:#2A2822;">ink-3 #95907F</div>
+</div>
+<div class="row">
+  <div class="sem" style="background:#1F2A23; color:#8FB89F; border-color:#2A2822;">accent #8FB89F</div>
+  <div class="sem" style="background:#1C1B17; color:#D4925E; border-color:#2A2822;">warn #D4925E</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Solvy — Serif Font Exploration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Serif+Display:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Pretendard Variable';
+    font-weight: 45 920;
+    src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2') format('woff2-variations');
+  }
+  :root {
+    --bg: #F5F2EC; --bg-elevated: #FBF9F4; --bg-sunken: #EEEAE1;
+    --ink: #1A1814; --ink-2: #3C3932; --ink-3: #6B675D; --ink-4: #9E998E;
+    --line: #E2DDD0; --accent: #3D5C4B;
+    --font-sans: 'Pretendard Variable', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: var(--font-sans); color: var(--ink); padding: 0; }
+
+  .page { max-width: 860px; margin: 0 auto; padding: 40px 32px 80px; }
+
+  .intro { margin-bottom: 40px; }
+  .intro h1 { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; }
+  .intro p { font-size: 14px; color: var(--ink-3); line-height: 1.6; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+
+  .card {
+    background: var(--bg-elevated); border: 1px solid var(--line);
+    border-radius: 20px; overflow: hidden; cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+  .card:hover { border-color: var(--ink-3); box-shadow: 0 2px 12px rgba(26,24,20,0.08); }
+  .card.current { border-color: var(--ink-3); }
+  .card.recommended { border-color: var(--accent); }
+
+  .badge {
+    position: absolute; top: 14px; right: 14px;
+    padding: 3px 10px; border-radius: 9999px; font-size: 10px; font-weight: 600;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .badge.current { background: var(--bg-sunken); color: var(--ink-3); }
+  .badge.recommended { background: rgba(61,92,75,0.12); color: var(--accent); }
+  .badge.strong { background: rgba(61,92,75,0.2); color: var(--accent); }
+
+  .card-hero {
+    padding: 28px 28px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .card-meta {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-4); margin-bottom: 12px;
+  }
+  .wordmark { line-height: 1; margin-bottom: 10px; }
+  .context-row {
+    display: flex; gap: 20px; align-items: baseline;
+    font-size: 12px; color: var(--ink-4); flex-wrap: wrap;
+  }
+  .context-row span { font-size: 13px; color: var(--ink-3); }
+
+  .card-body { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 8px; }
+  .card-desc { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { padding: 2px 9px; background: var(--bg-sunken); border-radius: 9999px; font-size: 11px; color: var(--ink-3); }
+  .tag.pro { background: rgba(61,92,75,0.08); color: var(--accent); }
+  .tag.con { background: rgba(166,95,46,0.08); color: var(--warn, #A65F2E); }
+
+  .verdict { margin-top: 40px; padding: 24px 28px; background: var(--bg-elevated); border: 1px solid var(--line); border-radius: 20px; }
+  .verdict-title { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-4); margin-bottom: 12px; }
+  .verdict-row { display: flex; gap: 14px; margin-bottom: 10px; align-items: flex-start; }
+  .rank { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 22px; color: var(--accent); min-width: 24px; }
+  .verdict-text { font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+  .verdict-text strong { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="intro">
+    <h1>Serif Font Exploration — Solvy Wordmark</h1>
+    <p>현재 사용 중인 Instrument Serif와 5가지 대안을 비교합니다. 각 카드에서 "Solvy" 워드마크, 섹션 레이블(i. Intent), 본문 강조 텍스트를 함께 확인하세요.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- 1. Instrument Serif (current) -->
+    <div class="card current">
+      <div class="badge current">현재 사용 중</div>
+      <div class="card-hero">
+        <div class="card-meta">Instrument Serif — Google Fonts</div>
+        <div class="wordmark" style="font-family:'Instrument Serif',serif; font-style:italic; font-size:52px; color:var(--ink);">Solvy</div>
+        <div class="context-row">
+          <span style="font-family:'Instrument Serif',serif; font-style:italic;">i. Intent &nbsp; ii. Solution</span>
+          <span style="font-family:'Instrument Serif',serif; font-style:italic; font-size:15px;">Hint 1</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-desc">깔끔하고 현대적인 세리프. 그러나 개성이 약하고 italic의 드라마틱함이 부족함.</div>
+        <div class="card-tags">
+          <span class="tag pro">가독성 좋음</span>
+          <span class="tag con">개성 부족</span>
+          <span class="tag con">에듀테크 과포화</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Cormorant Garamond -->
+    <div class="card recommended">
+      <div class="badge strong">★ 추천 1순위</div>
+      <div class="card-hero">
+        <div class="card-meta">Cormorant Garamond — Google Fonts</div>
+        <div class="wordmark" style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:56px; color:var(--ink); letter-spacing:-0.01em;">Solvy</div>
+        <div class="context-row">
+          <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px;">i. Intent &nbsp; ii. Solution</span>
+          <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px;">Hint 1</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-desc">오래된 가라몬드 계열의 고급스러운 italic. 획의 굵기 대비가 크고 클래식한 잉크 느낌. 도서관·학술지 분위기에 완벽하게 맞음.</div>
+        <div class="card-tags">
+          <span class="tag pro">가장 학술적</span>
+          <span class="tag pro">italic 드라마틱</span>
+          <span class="tag pro">잉크 느낌</span>
+          <span class="tag con">소형 크기 가독성 ↓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Playfair Display -->
+    <div class="card">
+      <div class="badge recommended">추천 2순위</div>
+      <div class="card-hero">
+        <div class="card-meta">Playfair Display — Google Fonts</div>
+        <div class="wordmark" style="font-family:'Playfair Display',serif; font-style:italic; font-size:48px; color:var(--ink);">Solvy</div>
+        <div class="context-row">
+          <span style="font-family:'Playfair Display',serif; font-style:italic; font-size:14px;">i. Intent &nbsp; ii. Solution</span>
+          <span style="font-family:'Playfair Display',serif; font-style:italic; font-size:15px;">Hint 1</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-desc">획 대비가 강하고 고급 출판물 느낌. 워드마크로서의 존재감이 강함. 약간 럭셔리한 톤이 있어 학부모에게 신뢰감을 줌.</div>
+        <div class="card-tags">
+          <span class="tag pro">강한 존재감</span>
+          <span class="tag pro">신뢰감</span>
+          <span class="tag con">약간 무거움</span>
+          <span class="tag con">에디토리얼 느낌</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. DM Serif Display -->
+    <div class="card">
+      <div class="card-hero">
+        <div class="card-meta">DM Serif Display — Google Fonts</div>
+        <div class="wordmark" style="font-family:'DM Serif Display',serif; font-style:italic; font-size:52px; color:var(--ink);">Solvy</div>
+        <div class="context-row">
+          <span style="font-family:'DM Serif Display',serif; font-style:italic; font-size:14px;">i. Intent &nbsp; ii. Solution</span>
+          <span style="font-family:'DM Serif Display',serif; font-style:italic; font-size:15px;">Hint 1</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-desc">현대적이면서도 세리프의 품격이 있음. Instrument Serif보다 italic이 더 선명하고 뚜렷함. 균형 잡힌 중간 선택지.</div>
+        <div class="card-tags">
+          <span class="tag pro">현대적 균형</span>
+          <span class="tag pro">italic 선명</span>
+          <span class="tag con">개성 다소 평범</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Lora -->
+    <div class="card">
+      <div class="card-hero">
+        <div class="card-meta">Lora — Google Fonts</div>
+        <div class="wordmark" style="font-family:'Lora',serif; font-style:italic; font-size:52px; color:var(--ink);">Solvy</div>
+        <div class="context-row">
+          <span style="font-family:'Lora',serif; font-style:italic; font-size:14px;">i. Intent &nbsp; ii. Solution</span>
+          <span style="font-family:'Lora',serif; font-style:italic; font-size:15px;">Hint 1</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-desc">본문용으로도 쓸 수 있는 세리프. italic이 부드럽고 따뜻함. 섹션 레이블(i. Intent)처럼 작은 크기에서도 읽힘. 너무 편안해서 브랜드 파워는 약함.</div>
+        <div class="card-tags">
+          <span class="tag pro">소형 가독성 최고</span>
+          <span class="tag pro">따뜻한 느낌</span>
+          <span class="tag con">브랜드 파워 약</span>
+          <span class="tag con">블로그 느낌</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Libre Baskerville -->
+    <div class="card">
+      <div class="card-hero">
+        <div class="card-meta">Libre Baskerville — Google Fonts</div>
+        <div class="wordmark" style="font-family:'Libre Baskerville',serif; font-style:italic; font-size:46px; color:var(--ink);">Solvy</div>
+        <div class="context-row">
+          <span style="font-family:'Libre Baskerville',serif; font-style:italic; font-size:13px;">i. Intent &nbsp; ii. Solution</span>
+          <span style="font-family:'Libre Baskerville',serif; font-style:italic; font-size:14px;">Hint 1</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-desc">교과서·학술 논문 느낌의 클래식 바스커빌. 획이 굵어 신뢰감을 주지만 italic의 우아함보다 무게감이 앞섬. 학부모 대시보드에 더 어울림.</div>
+        <div class="card-tags">
+          <span class="tag pro">신뢰·권위</span>
+          <span class="tag pro">교과서 분위기</span>
+          <span class="tag con">워드마크로 다소 무거움</span>
+          <span class="tag con">italic 우아함 부족</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Verdict -->
+  <div class="verdict">
+    <div class="verdict-title">종합 의견</div>
+    <div class="verdict-row">
+      <div class="rank">1.</div>
+      <div class="verdict-text"><strong>Cormorant Garamond</strong> — "도서관·잉크·학술지" 포지셔닝에 가장 완벽하게 맞음. italic의 획 굵기 대비가 크고 클래식해서 "Solvy"가 워드마크로서의 존재감을 가짐. 단, 섹션 레이블처럼 작은 크기(13px)에서는 약간 얇아지니 섹션 레이블에는 Lora나 DM Serif Display를 혼용하는 방법도 있음.</div>
+    </div>
+    <div class="verdict-row">
+      <div class="rank">2.</div>
+      <div class="verdict-text"><strong>Playfair Display</strong> — 좀 더 강하고 현대적인 인상을 원한다면. 학부모가 봤을 때 "고급 학습 도구"라는 신뢰감 전달에 탁월. 그러나 경쟁앱 대비 약간 럭셔리 브랜드처럼 보일 수 있음.</div>
+    </div>
+    <div class="verdict-row">
+      <div class="rank">3.</div>
+      <div class="verdict-text"><strong>현재 Instrument Serif 유지</strong>는 안전하지만 차별화에 불리함. 개선하려면 최소한 Cormorant Garamond로 교체 권장.</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

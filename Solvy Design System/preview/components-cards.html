@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 20px 24px; background: var(--bg); font-family: var(--font-sans); display: flex; flex-direction: column; gap: 12px; }
+  .section-title { font-family: var(--font-serif); font-style: italic; font-size: 12px; color: var(--ink-4); margin: 0; }
+</style>
+</head>
+<body>
+  <div class="section-title">Card Variants</div>
+
+  <!-- Elevated card (problem card) -->
+  <div style="background:var(--bg-elevated); border:1px solid var(--line); border-radius:22px; padding:16px; display:flex; gap:14px;">
+    <div style="width:72px; height:72px; background:var(--bg-sunken); border-radius:16px; flex-shrink:0; display:flex; align-items:center; justify-content:center;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--ink-4)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+    </div>
+    <div style="flex:1;">
+      <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
+        <span style="padding:2px 8px; background:color-mix(in srgb,var(--accent) 10%,transparent); color:var(--accent); border-radius:9999px; font-size:11px; font-weight:500;">수학Ⅱ</span>
+        <span style="padding:2px 8px; background:color-mix(in srgb,var(--line) 50%,transparent); color:var(--ink-3); border-radius:9999px; font-size:11px;">3점</span>
+      </div>
+      <div style="font-family:var(--font-mono); font-size:13px; color:var(--ink-2);">x² + 5x + 6 = 0</div>
+    </div>
+  </div>
+
+  <!-- Sunken / hint card -->
+  <div style="background:var(--bg-sunken); border:1px solid var(--line); border-radius:22px; padding:20px;">
+    <div style="font-family:var(--font-serif); font-style:italic; color:var(--accent); font-size:15px; font-weight:500; margin-bottom:6px;">Hint 1</div>
+    <div style="font-size:14px; color:var(--ink-2); line-height:1.6;">인수분해를 이용하면 더 빠르게 풀 수 있어요. 두 수의 합이 5, 곱이 6인 경우를 생각해보세요.</div>
+  </div>
+
+  <!-- Expert insight card -->
+  <div style="background:var(--bg-sunken); border:1px solid var(--line); border-radius:22px; padding:20px; display:flex; gap:14px;">
+    <div style="width:40px; height:40px; border-radius:50%; background:var(--bg-elevated); border:1px solid var(--line); flex-shrink:0; display:flex; align-items:center; justify-content:center;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
+    </div>
+    <div>
+      <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--ink-3); font-weight:500; margin-bottom:6px;">Expert Insight</div>
+      <div style="font-size:14px; color:var(--ink-2); line-height:1.6;">이차방정식은 근의 공식보다 인수분해가 계산이 훨씬 빠릅니다.</div>
+    </div>
+  </div>
+</body>
+</html>
