@@ -28,7 +28,7 @@ problems.post('/', async (c) => {
   const supabase = createClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_KEY)
   const ai = createAI(c.env, supabase)
   const pipeline = runAnalysisPipeline(session.id, imageUrl, userId, { ai, db })
-  c.executionCtx?.waitUntil(pipeline)
+  try { c.executionCtx.waitUntil(pipeline) } catch { void pipeline }
 
   return c.json({ id: session.id, status: 'analyzing' }, 202)
 })
@@ -91,7 +91,7 @@ problems.post('/:id/confirm', async (c) => {
   const supabase = createClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_KEY)
   const ai = createAI(c.env, supabase)
   const pipeline = runPipelineFromClassify(id, body.text, userId, { ai, db })
-  c.executionCtx?.waitUntil(pipeline)
+  try { c.executionCtx.waitUntil(pipeline) } catch { void pipeline }
 
   return c.json({ id, status: 'analyzing' }, 202)
 })
