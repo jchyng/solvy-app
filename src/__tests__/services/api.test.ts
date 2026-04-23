@@ -33,10 +33,12 @@ describe('api client', () => {
     expect(init.method).toBeUndefined()
   })
 
-  it('api.problems.upload uses POST method with JSON body', async () => {
-    await api.problems.upload({ image: 'base64' })
+  it('api.problems.upload uses POST method with FormData body', async () => {
+    const form = new FormData()
+    form.append('image', new Blob(['data'], { type: 'image/jpeg' }), 'test.jpg')
+    await api.problems.upload(form)
     const init = mockFetch.mock.calls[0][1] as RequestInit
     expect(init.method).toBe('POST')
-    expect(init.body).toBe(JSON.stringify({ image: 'base64' }))
+    expect(init.body).toBeInstanceOf(FormData)
   })
 })

@@ -40,8 +40,10 @@ function del(path: string): Promise<Response> {
 
 export const api = {
   problems: {
-    upload: (body: unknown) => post('/problems', body),
+    upload: (formData: FormData) => request('/problems', { method: 'POST', body: formData }),
     get: (id: string) => get(`/problems/${id}`),
+    status: (id: string) => get(`/problems/${id}/status`),
+    confirm: (id: string, body: { text: string }) => post(`/problems/${id}/confirm`, body),
   },
   conversations: {
     list: () => get('/conversations'),
