@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "../Solvy Design System/colors_and_type.css";
+@import "../design-system/colors_and_type.css";
 
 *, *::before, *::after {
   box-sizing: border-box;

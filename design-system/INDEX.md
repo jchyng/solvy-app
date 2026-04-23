@@ -10,10 +10,10 @@
 | 필요한 상황 | 읽을 파일 |
 |---|---|
 | 색상 토큰 · 타이포 스케일 | 아래 Quick Reference (이 파일 내) |
-| CSS 변수 전체 정의 | `Solvy Design System/colors_and_type.css` |
-| 컴포넌트 가이드라인 · 보이스&톤 | `Solvy Design System/README.md` |
-| 실제 컴포넌트 구현체 | `Solvy Design System/ui_kits/mobile_app/*.jsx` |
-| 부모 대시보드 구현체 | `Solvy Design System/ui_kits/parent_dashboard/Dashboard.jsx` |
+| CSS 변수 전체 정의 | `design-system/colors_and_type.css` |
+| 컴포넌트 가이드라인 · 보이스&톤 | `design-system/README.md` |
+| 실제 컴포넌트 구현체 | `design-system/ui_kits/mobile_app/*.jsx` |
+| 부모 대시보드 구현체 | `design-system/ui_kits/parent_dashboard/Dashboard.jsx` |
 | **preview/ 폴더** | **AI 읽기 불필요** — 사람용 시각 미리보기 HTML |
 
 ---
@@ -81,7 +81,7 @@ mono   JetBrains Mono              — 수식, 코드, 단답 표시
 
 ---
 
-## 컴포넌트 클래스 (`Solvy Design System/colors_and_type.css` 정의)
+## 컴포넌트 클래스 (`design-system/colors_and_type.css` 정의)
 
 ```
 .solvy-card            배경 bg-elevated, 1px border, radius-xl
@@ -110,13 +110,13 @@ mono   JetBrains Mono              — 수식, 코드, 단답 표시
 ## UI 킷 파일 위치
 
 ```
-Solvy Design System/ui_kits/mobile_app/
+design-system/ui_kits/mobile_app/
   Shared.jsx      공통 프리미티브 (TOKENS 변수, Icon 컴포넌트, MobileFrame, Header)
   UploadView.jsx  홈/업로드 화면
   LoadingView.jsx 분석 로딩 화면
   ResultView.jsx  결과 화면 (Intent → Solution → Answer → Tip)
   ChatView.jsx    소크라틱 채팅 Q&A
 
-Solvy Design System/ui_kits/parent_dashboard/
+design-system/ui_kits/parent_dashboard/
   Dashboard.jsx   부모 대시보드 (streak, 주간 차트, 과목별 분석)
 ```

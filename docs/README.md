@@ -80,7 +80,7 @@ docs/
 | "DB 스키마가 뭐였지?" | `architecture/data-model.md` |
 | "이벤트 이름 규칙?" | `architecture/data-model.md` §이벤트 규약 |
 | "기존 프로토타입에서 뭘 가져와?" | `architecture/prototype-migration.md` |
-| "색상·폰트·컴포넌트 스타일?" | `design-system/INDEX.md` (빠른 참조) · `Solvy Design System/README.md` (전체) |
+| "색상·폰트·컴포넌트 스타일?" | `design-system/INDEX.md` (빠른 참조) · `design-system/README.md` (전체) |
 | "가격·플랜은 어떻게?" | `context/02-business-model.md` |
 | "장애 대응 · 폴백?" | `context/03-risks.md` · `architecture/ai-providers.md` §폴백 |
 
