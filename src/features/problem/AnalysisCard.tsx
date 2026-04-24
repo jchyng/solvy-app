@@ -45,7 +45,7 @@ export function AnalysisCard({ result, onFollowUp, isFavorite, onFavoriteToggle,
       {/* 출제 의도 */}
       <section>
         <h3 style={sectionTitle}>출제 의도</h3>
-        <p style={{ color: 'var(--ink-1)', fontSize: 'var(--text-body)', lineHeight: 1.6 }}>
+        <p style={{ color: 'var(--ink)', fontSize: 'var(--text-body)', lineHeight: 1.6 }}>
           {result.intent}
         </p>
       </section>
@@ -87,7 +87,7 @@ export function AnalysisCard({ result, onFollowUp, isFavorite, onFavoriteToggle,
           <ol style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '20px' }}>
             {result.optimal_solution.steps.map((step, i) => (
               <li key={i}>
-                <strong style={{ color: 'var(--ink-1)', fontSize: 'var(--text-body)' }}>
+                <strong style={{ color: 'var(--ink)', fontSize: 'var(--text-body)' }}>
                   {step.title}
                 </strong>
                 <p style={{ color: 'var(--ink-2)', fontSize: 'var(--text-body)', marginTop: '4px', lineHeight: 1.6 }}>
@@ -103,7 +103,7 @@ export function AnalysisCard({ result, onFollowUp, isFavorite, onFavoriteToggle,
       {result.exam_tips.length > 0 && (
         <section
           style={{
-            background: 'var(--surface-2)',
+            background: 'var(--bg-sunken)',
             borderRadius: '12px',
             padding: '16px',
             borderLeft: '4px solid var(--accent)',
@@ -140,22 +140,22 @@ export function AnalysisCard({ result, onFollowUp, isFavorite, onFavoriteToggle,
 }
 
 const sectionTitle: React.CSSProperties = {
-  color: 'var(--ink-1)',
+  color: 'var(--ink)',
   fontSize: 'var(--text-body)',
   fontWeight: 700,
   marginBottom: '10px',
 }
 
 const conceptChip: React.CSSProperties = {
-  background: 'var(--surface-2)',
-  color: 'var(--ink-1)',
+  background: 'var(--bg-sunken)',
+  color: 'var(--ink)',
   borderRadius: '20px',
   padding: '4px 12px',
   fontSize: 'var(--text-small)',
 }
 
 const placeholderBtn: React.CSSProperties = {
-  background: 'var(--surface-2)',
+  background: 'var(--bg-sunken)',
   color: 'var(--ink-3)',
   border: 'none',
   borderRadius: '8px',
@@ -166,7 +166,7 @@ const placeholderBtn: React.CSSProperties = {
 }
 
 const activeBtn: React.CSSProperties = {
-  background: 'var(--surface-2)',
+  background: 'var(--bg-sunken)',
   color: 'var(--accent)',
   border: '1px solid var(--accent)',
   borderRadius: '8px',
@@ -176,7 +176,7 @@ const activeBtn: React.CSSProperties = {
 }
 
 const chipBtn: React.CSSProperties = {
-  background: 'var(--surface-2)',
+  background: 'var(--bg-sunken)',
   color: 'var(--accent)',
   border: '1px solid var(--accent)',
   borderRadius: '20px',

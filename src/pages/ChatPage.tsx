@@ -30,7 +30,7 @@ function TypingIndicator() {
             width: '6px',
             height: '6px',
             borderRadius: '50%',
-            background: 'var(--ink-3, #9ca3af)',
+            background: 'var(--ink-3)',
             display: 'inline-block',
             opacity: 0.6,
             animationDelay: `${i * 0.2}s`,
@@ -313,7 +313,7 @@ export default function ChatPage() {
   if (loadError) {
     return (
       <main style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh' }}>
-        <p style={{ color: 'var(--error, #e53e3e)' }}>{loadError}</p>
+        <p style={{ color: 'var(--warn)' }}>{loadError}</p>
       </main>
     )
   }
@@ -398,7 +398,7 @@ export default function ChatPage() {
           return (
             <div key={msg.id} style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <div style={userBubble}>
-                <span style={{ whiteSpace: 'pre-wrap', fontSize: 'var(--text-body, 15px)' }}>
+                <span style={{ whiteSpace: 'pre-wrap', fontSize: 'var(--text-body)' }}>
                   {msg.content}
                 </span>
               </div>
@@ -412,7 +412,7 @@ export default function ChatPage() {
             data-testid="difficulty-selector"
             style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}
           >
-            <span style={{ color: 'var(--ink-2)', fontSize: 'var(--text-small, 13px)', width: '100%' }}>
+            <span style={{ color: 'var(--ink-2)', fontSize: 'var(--text-small)', width: '100%' }}>
               난이도를 선택하세요
             </span>
             {(['same', 'up', 'down'] as const).map((d) => (
@@ -451,7 +451,7 @@ export default function ChatPage() {
             style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start' }}
             data-testid="stream-error"
           >
-            <p style={{ color: 'var(--error, #e53e3e)', fontSize: 'var(--text-small, 13px)' }}>
+            <p style={{ color: 'var(--warn)', fontSize: 'var(--text-small)' }}>
               오류: {streamError}
             </p>
             <button onClick={handleRetry} style={retryBtn} data-testid="retry-btn">
@@ -488,7 +488,7 @@ export default function ChatPage() {
       {/* 입력창 */}
       <div
         style={{
-          borderTop: '1px solid var(--surface-2, #f3f4f6)',
+          borderTop: '1px solid var(--line)',
           padding: '12px 16px',
           display: 'flex',
           gap: '8px',
@@ -522,8 +522,8 @@ export default function ChatPage() {
 }
 
 const assistantBubble: React.CSSProperties = {
-  background: 'var(--surface-2, #f3f4f6)',
-  color: 'var(--ink-1, #111)',
+  background: 'var(--bg-sunken)',
+  color: 'var(--ink)',
   borderRadius: '16px',
   padding: '12px 16px',
   maxWidth: '80%',
@@ -531,51 +531,51 @@ const assistantBubble: React.CSSProperties = {
 }
 
 const userBubble: React.CSSProperties = {
-  background: 'var(--accent, #6366f1)',
-  color: '#fff',
+  background: 'var(--accent)',
+  color: 'var(--interactive-primary-text)',
   borderRadius: '16px',
   padding: '12px 16px',
   maxWidth: '80%',
 }
 
 const chipStyle: React.CSSProperties = {
-  background: 'var(--surface-2, #f3f4f6)',
-  color: 'var(--accent, #6366f1)',
-  border: '1px solid var(--accent, #6366f1)',
+  background: 'var(--bg-sunken)',
+  color: 'var(--accent)',
+  border: '1px solid var(--accent)',
   borderRadius: '20px',
   padding: '8px 16px',
-  fontSize: 'var(--text-small, 13px)',
+  fontSize: 'var(--text-small)',
   cursor: 'pointer',
 }
 
 const retryBtn: React.CSSProperties = {
   background: 'none',
-  color: 'var(--accent, #6366f1)',
-  border: '1px solid var(--accent, #6366f1)',
+  color: 'var(--accent)',
+  border: '1px solid var(--accent)',
   borderRadius: '8px',
   padding: '6px 12px',
-  fontSize: 'var(--text-small, 13px)',
+  fontSize: 'var(--text-small)',
   cursor: 'pointer',
 }
 
 const inputStyle: React.CSSProperties = {
   flex: 1,
-  border: '1px solid var(--surface-2, #f3f4f6)',
+  border: '1px solid var(--line)',
   borderRadius: '12px',
   padding: '12px 16px',
-  fontSize: 'var(--text-body, 15px)',
-  background: 'var(--surface-1, #fff)',
-  color: 'var(--ink-1, #111)',
+  fontSize: 'var(--text-body)',
+  background: 'var(--bg-elevated)',
+  color: 'var(--ink)',
   outline: 'none',
 }
 
 const sendBtn: React.CSSProperties = {
-  background: 'var(--accent, #6366f1)',
-  color: '#fff',
+  background: 'var(--accent)',
+  color: 'var(--interactive-primary-text)',
   border: 'none',
   borderRadius: '12px',
   padding: '12px 20px',
-  fontSize: 'var(--text-body, 15px)',
+  fontSize: 'var(--text-body)',
   cursor: 'pointer',
   fontWeight: 600,
 }

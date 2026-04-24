@@ -109,7 +109,7 @@ export function FolderBottomSheet({ folder, onSave, onClose }: Props) {
               borderRadius: 12,
               border: 'none',
               background: name.trim() ? 'var(--accent)' : 'var(--line)',
-              color: name.trim() ? '#fff' : 'var(--ink-4)',
+              color: name.trim() ? 'var(--interactive-primary-text)' : 'var(--ink-4)',
               fontSize: 16,
               fontWeight: 600,
               cursor: name.trim() ? 'pointer' : 'not-allowed',

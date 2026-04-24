@@ -17,7 +17,7 @@ export function LoadingView({ phase, errorMessage }: Props) {
       <main className="flex flex-col items-center justify-center min-h-dvh p-6 gap-4">
         <div
           style={{
-            background: 'var(--surface-2)',
+            background: 'var(--bg-sunken)',
             borderRadius: '16px',
             padding: '24px',
             maxWidth: '360px',
@@ -25,7 +25,7 @@ export function LoadingView({ phase, errorMessage }: Props) {
             textAlign: 'center',
           }}
         >
-          <p style={{ color: 'var(--error, #e53e3e)', fontSize: 'var(--text-body)', marginBottom: '8px' }}>
+          <p style={{ color: 'var(--warn)', fontSize: 'var(--text-body)', marginBottom: '8px' }}>
             오류가 발생했습니다
           </p>
           {errorMessage && (
@@ -63,12 +63,12 @@ export function LoadingView({ phase, errorMessage }: Props) {
                   width: '24px',
                   height: '24px',
                   borderRadius: '50%',
-                  background: done ? 'var(--accent)' : active ? 'var(--accent)' : 'var(--surface-2)',
+                  background: done ? 'var(--accent)' : active ? 'var(--accent)' : 'var(--bg-sunken)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '12px',
-                  color: '#fff',
+                  color: 'var(--interactive-primary-text)',
                   flexShrink: 0,
                 }}
               >
@@ -76,7 +76,7 @@ export function LoadingView({ phase, errorMessage }: Props) {
               </div>
               <span
                 style={{
-                  color: active ? 'var(--ink-1)' : 'var(--ink-2)',
+                  color: active ? 'var(--ink)' : 'var(--ink-2)',
                   fontSize: 'var(--text-body)',
                   fontWeight: active ? 600 : 400,
                 }}

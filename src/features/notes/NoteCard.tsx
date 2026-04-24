@@ -67,7 +67,7 @@ export function NoteCard({ conversation, onFavoriteToggle, isSelecting, isSelect
       onPointerUp={cancelLongPress}
       onPointerCancel={cancelLongPress}
       style={{
-        background: isSelected ? 'var(--surface-2)' : 'var(--bg-elevated)',
+        background: isSelected ? 'var(--bg-sunken)' : 'var(--bg-elevated)',
         border: isSelected ? '2px solid var(--accent)' : '1px solid var(--line)',
         borderRadius: 12,
         padding: '14px 16px',
@@ -117,7 +117,7 @@ export function NoteCard({ conversation, onFavoriteToggle, isSelecting, isSelect
             border: 'none',
             cursor: 'pointer',
             fontSize: 18,
-            color: conversation.is_favorite ? '#F5A623' : 'var(--ink-4)',
+            color: conversation.is_favorite ? 'var(--favorite)' : 'var(--ink-4)',
             padding: 4,
             flexShrink: 0,
           }}

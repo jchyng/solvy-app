@@ -11,7 +11,7 @@ export function ConfirmView() {
     <main className="flex flex-col items-center justify-center min-h-dvh p-6 gap-6">
       <div style={{ width: '100%', maxWidth: '480px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div>
-          <h2 style={{ color: 'var(--ink-1)', fontSize: 'var(--text-heading)', marginBottom: '8px' }}>
+          <h2 style={{ color: 'var(--ink)', fontSize: 'var(--text-h2)', marginBottom: '8px' }}>
             문제 텍스트 확인
           </h2>
           <p style={{ color: 'var(--ink-2)', fontSize: 'var(--text-small)' }}>
@@ -29,8 +29,8 @@ export function ConfirmView() {
             border: '1px solid var(--ink-3)',
             padding: '16px',
             fontSize: 'var(--text-body)',
-            color: 'var(--ink-1)',
-            background: 'var(--surface-2)',
+            color: 'var(--ink)',
+            background: 'var(--bg-sunken)',
             resize: 'vertical',
             fontFamily: 'var(--font-mono, monospace)',
             boxSizing: 'border-box',
@@ -42,7 +42,7 @@ export function ConfirmView() {
           disabled={isSubmitting || !text.trim()}
           style={{
             background: 'var(--accent)',
-            color: '#fff',
+            color: 'var(--interactive-primary-text)',
             border: 'none',
             borderRadius: '12px',
             padding: '14px',

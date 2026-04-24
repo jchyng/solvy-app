@@ -48,7 +48,7 @@ export function UploadView() {
             onClick={() => cameraRef.current?.click()}
             style={{
               background: 'var(--accent)',
-              color: '#fff',
+              color: 'var(--interactive-primary-text)',
               border: 'none',
               borderRadius: '12px',
               padding: '12px 20px',
@@ -61,8 +61,8 @@ export function UploadView() {
           <button
             onClick={() => albumRef.current?.click()}
             style={{
-              background: 'var(--surface-2)',
-              color: 'var(--ink-1)',
+              background: 'var(--bg-sunken)',
+              color: 'var(--ink)',
               border: 'none',
               borderRadius: '12px',
               padding: '12px 20px',

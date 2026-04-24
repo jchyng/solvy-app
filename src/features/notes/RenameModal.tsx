@@ -89,7 +89,7 @@ export function RenameModal({ initialTitle, onSave, onClose }: Props) {
                 borderRadius: 10,
                 border: 'none',
                 background: value.trim() ? 'var(--accent)' : 'var(--line)',
-                color: value.trim() ? '#fff' : 'var(--ink-4)',
+                color: value.trim() ? 'var(--interactive-primary-text)' : 'var(--ink-4)',
                 fontSize: 15,
                 fontWeight: 600,
                 cursor: value.trim() ? 'pointer' : 'not-allowed',

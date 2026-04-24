@@ -112,6 +112,8 @@
 
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
+
+    --favorite: #E8971E;
   }
 }
 
@@ -128,6 +130,7 @@
   --text-accent:      var(--accent);
   --text-warn:        var(--warn);
   --text-inverse:     var(--bg);  /* Text on dark (ink-colored) backgrounds */
+  --favorite:         #F5A623;    /* 즐겨찾기 별 — 골든 앰버 */
 
   /* Surface roles */
   --surface-page:     var(--bg);

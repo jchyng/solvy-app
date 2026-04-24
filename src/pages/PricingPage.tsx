@@ -64,21 +64,21 @@ export default function PricingPage() {
           data-testid="beta-badge"
           style={{
             display: 'inline-block',
-            background: 'var(--accent, #6366f1)',
-            color: '#fff',
+            background: 'var(--accent)',
+            color: 'var(--interactive-primary-text)',
             borderRadius: '20px',
             padding: '6px 18px',
-            fontSize: 'var(--text-small, 13px)',
+            fontSize: 'var(--text-small)',
             fontWeight: 600,
             marginBottom: '12px',
           }}
         >
           베타 기간 무료
         </span>
-        <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--ink-1, #111)', margin: '0 0 8px' }}>
+        <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--ink)', margin: '0 0 8px' }}>
           요금제
         </h1>
-        <p style={{ color: 'var(--ink-2, #6b7280)', fontSize: 'var(--text-body, 15px)', margin: 0 }}>
+        <p style={{ color: 'var(--ink-2)', fontSize: 'var(--text-body)', margin: 0 }}>
           베타 기간 동안 모든 기능이 무료입니다.
           <br />
           정식 출시 시 베타 참여자 특별 혜택이 제공됩니다.
@@ -95,13 +95,13 @@ export default function PricingPage() {
             data-testid={`plan-${plan.id}`}
             style={{
               border: plan.highlighted
-                ? '2px solid var(--accent, #6366f1)'
-                : '1px solid var(--surface-2, #f3f4f6)',
+                ? '2px solid var(--accent)'
+                : '1px solid var(--line)',
               borderRadius: '16px',
               padding: '20px',
               background: plan.highlighted
-                ? 'var(--surface-1, #fff)'
-                : 'var(--surface-1, #fff)',
+                ? 'var(--bg-elevated)'
+                : 'var(--bg-elevated)',
               position: 'relative',
             }}
           >
@@ -112,8 +112,8 @@ export default function PricingPage() {
                   top: '-12px',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  background: 'var(--accent, #6366f1)',
-                  color: '#fff',
+                  background: 'var(--accent)',
+                  color: 'var(--interactive-primary-text)',
                   borderRadius: '20px',
                   padding: '4px 14px',
                   fontSize: '12px',
@@ -129,10 +129,10 @@ export default function PricingPage() {
               <div>
                 <h2 style={{ margin: '0 0 4px', fontSize: '20px', fontWeight: 700 }}>{plan.name}</h2>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                  <span style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent, #6366f1)' }}>
+                  <span style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent)' }}>
                     {plan.price}
                   </span>
-                  <span style={{ fontSize: '13px', color: 'var(--ink-3, #9ca3af)' }}>
+                  <span style={{ fontSize: '13px', color: 'var(--ink-3)' }}>
                     {plan.priceNote}
                   </span>
                 </div>
@@ -141,7 +141,7 @@ export default function PricingPage() {
 
             <ul style={{ margin: '16px 0', paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {plan.features.map((f) => (
-                <li key={f} style={{ color: 'var(--ink-2, #6b7280)', fontSize: 'var(--text-body, 15px)' }}>
+                <li key={f} style={{ color: 'var(--ink-2)', fontSize: 'var(--text-body)' }}>
                   {f}
                 </li>
               ))}
@@ -150,12 +150,12 @@ export default function PricingPage() {
             <button
               style={{
                 width: '100%',
-                background: plan.highlighted ? 'var(--accent, #6366f1)' : 'transparent',
-                color: plan.highlighted ? '#fff' : 'var(--accent, #6366f1)',
-                border: '1px solid var(--accent, #6366f1)',
+                background: plan.highlighted ? 'var(--accent)' : 'transparent',
+                color: plan.highlighted ? 'var(--interactive-primary-text)' : 'var(--accent)',
+                border: '1px solid var(--accent)',
                 borderRadius: '12px',
                 padding: '12px',
-                fontSize: 'var(--text-body, 15px)',
+                fontSize: 'var(--text-body)',
                 fontWeight: 600,
                 cursor: 'pointer',
               }}
@@ -174,8 +174,8 @@ export default function PricingPage() {
           style={{
             background: 'none',
             border: 'none',
-            color: 'var(--accent, #6366f1)',
-            fontSize: 'var(--text-body, 15px)',
+            color: 'var(--accent)',
+            fontSize: 'var(--text-body)',
             cursor: 'pointer',
             textDecoration: 'underline',
           }}
@@ -190,8 +190,8 @@ export default function PricingPage() {
 const backBtn: React.CSSProperties = {
   background: 'none',
   border: 'none',
-  color: 'var(--ink-2, #6b7280)',
-  fontSize: 'var(--text-body, 15px)',
+  color: 'var(--ink-2)',
+  fontSize: 'var(--text-body)',
   cursor: 'pointer',
   padding: '0',
 }

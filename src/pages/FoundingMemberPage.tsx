@@ -40,10 +40,10 @@ export default function FoundingMemberPage() {
 
       <div style={{ marginTop: '24px', marginBottom: '32px', textAlign: 'center' }}>
         <div style={{ fontSize: '40px', marginBottom: '12px' }}>🏅</div>
-        <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--ink-1, #111)', margin: '0 0 12px' }}>
+        <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--ink)', margin: '0 0 12px' }}>
           Solvy Founding Member
         </h1>
-        <p style={{ color: 'var(--ink-2, #6b7280)', fontSize: 'var(--text-body, 15px)', lineHeight: 1.6, margin: 0 }}>
+        <p style={{ color: 'var(--ink-2)', fontSize: 'var(--text-body)', lineHeight: 1.6, margin: 0 }}>
           콴다의 "무료였던 게 유료가 됐다" 실수를 반복하지 않겠습니다.
           <br />
           베타 참여자분들께 아래 혜택을 약속드립니다.
@@ -62,16 +62,16 @@ export default function FoundingMemberPage() {
               display: 'flex',
               gap: '16px',
               alignItems: 'flex-start',
-              border: '1px solid var(--surface-2, #f3f4f6)',
+              border: '1px solid var(--line)',
               borderRadius: '16px',
               padding: '16px',
-              background: 'var(--surface-1, #fff)',
+              background: 'var(--bg-elevated)',
             }}
           >
             <span style={{ fontSize: '28px', flexShrink: 0 }}>{b.icon}</span>
             <div>
               <h3 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 700 }}>{b.title}</h3>
-              <p style={{ margin: 0, color: 'var(--ink-2, #6b7280)', fontSize: 'var(--text-body, 15px)', lineHeight: 1.5 }}>
+              <p style={{ margin: 0, color: 'var(--ink-2)', fontSize: 'var(--text-body)', lineHeight: 1.5 }}>
                 {b.description}
               </p>
             </div>
@@ -83,8 +83,8 @@ export default function FoundingMemberPage() {
         style={{
           marginTop: '32px',
           textAlign: 'center',
-          color: 'var(--ink-3, #9ca3af)',
-          fontSize: 'var(--text-small, 13px)',
+          color: 'var(--ink-3)',
+          fontSize: 'var(--text-small)',
           lineHeight: 1.6,
         }}
       >
@@ -99,8 +99,8 @@ export default function FoundingMemberPage() {
 const backBtn: React.CSSProperties = {
   background: 'none',
   border: 'none',
-  color: 'var(--ink-2, #6b7280)',
-  fontSize: 'var(--text-body, 15px)',
+  color: 'var(--ink-2)',
+  fontSize: 'var(--text-body)',
   cursor: 'pointer',
   padding: '0',
 }

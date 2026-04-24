@@ -21,10 +21,10 @@ export function SimilarProblemCard({ payload, onStartNewChat }: Props) {
     <div
       data-testid="similar-problem-card"
       style={{
-        border: '1px solid var(--accent, #6366f1)',
+        border: '1px solid var(--accent)',
         borderRadius: '16px',
         padding: '16px',
-        background: 'var(--surface-1, #fff)',
+        background: 'var(--bg-elevated)',
         display: 'flex',
         flexDirection: 'column',
         gap: '12px',
@@ -33,8 +33,8 @@ export function SimilarProblemCard({ payload, onStartNewChat }: Props) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span
           style={{
-            fontSize: 'var(--text-small, 13px)',
-            color: 'var(--accent, #6366f1)',
+            fontSize: 'var(--text-small)',
+            color: 'var(--accent)',
             fontWeight: 600,
           }}
         >
@@ -67,10 +67,10 @@ export function SimilarProblemCard({ payload, onStartNewChat }: Props) {
         <div
           data-testid="answer-section"
           style={{
-            background: 'var(--surface-2, #f3f4f6)',
+            background: 'var(--bg-sunken)',
             borderRadius: '8px',
             padding: '10px 14px',
-            fontSize: 'var(--text-body, 15px)',
+            fontSize: 'var(--text-body)',
           }}
         >
           <strong>답:</strong> {payload.answer}
@@ -81,7 +81,7 @@ export function SimilarProblemCard({ payload, onStartNewChat }: Props) {
         <div
           data-testid="solution-section"
           style={{
-            background: 'var(--surface-2, #f3f4f6)',
+            background: 'var(--bg-sunken)',
             borderRadius: '8px',
             padding: '10px 14px',
           }}
@@ -105,21 +105,21 @@ export function SimilarProblemCard({ payload, onStartNewChat }: Props) {
 
 const toggleBtn: React.CSSProperties = {
   background: 'none',
-  color: 'var(--accent, #6366f1)',
-  border: '1px solid var(--accent, #6366f1)',
+  color: 'var(--accent)',
+  border: '1px solid var(--accent)',
   borderRadius: '20px',
   padding: '6px 14px',
-  fontSize: 'var(--text-small, 13px)',
+  fontSize: 'var(--text-small)',
   cursor: 'pointer',
 }
 
 const startNewChatBtn: React.CSSProperties = {
-  background: 'var(--accent, #6366f1)',
-  color: '#fff',
+  background: 'var(--accent)',
+  color: 'var(--interactive-primary-text)',
   border: 'none',
   borderRadius: '12px',
   padding: '10px 16px',
-  fontSize: 'var(--text-body, 15px)',
+  fontSize: 'var(--text-body)',
   cursor: 'pointer',
   fontWeight: 600,
   textAlign: 'center',

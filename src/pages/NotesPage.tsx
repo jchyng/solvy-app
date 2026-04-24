@@ -141,7 +141,7 @@ export default function NotesPage() {
             data-testid="batch-delete-btn"
             onClick={handleBatchDelete}
             disabled={selectedIds.size === 0}
-            style={{ ...batchBtn, color: 'var(--error, #e53e3e)' }}
+            style={{ ...batchBtn, color: 'var(--warn)' }}
           >
             삭제
           </button>
@@ -258,7 +258,7 @@ export default function NotesPage() {
 }
 
 const batchBtn: React.CSSProperties = {
-  background: 'var(--surface-2)',
+  background: 'var(--bg-sunken)',
   border: 'none',
   borderRadius: 8,
   padding: '6px 12px',
