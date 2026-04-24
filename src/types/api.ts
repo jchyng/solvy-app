@@ -62,3 +62,27 @@ export interface SSEEvent {
   follow_up_questions?: FollowUpQuestion[]
   message?: string
 }
+
+export interface ConversationSummary {
+  id: string
+  problem_session_id: string
+  title: string | null
+  auto_title: string | null
+  is_favorite: boolean
+  last_message_at: string
+  created_at: string
+  deleted_at: string | null
+}
+
+export interface Folder {
+  id: string
+  user_id: string
+  name: string
+  color: string
+  position: number
+  created_at: string
+}
+
+export function getDisplayTitle(conv: ConversationSummary): string {
+  return conv.title ?? conv.auto_title ?? '제목 없음'
+}

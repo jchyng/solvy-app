@@ -58,6 +58,10 @@ export const api = {
     create: (body: unknown) => post('/folders', body),
     update: (id: string, body: unknown) => patch(`/folders/${id}`, body),
     delete: (id: string) => del(`/folders/${id}`),
+    addConversation: (folderId: string, conversationId: string) =>
+      post(`/folders/${folderId}/conversations`, { conversation_id: conversationId }),
+    removeConversation: (folderId: string, conversationId: string) =>
+      del(`/folders/${folderId}/conversations/${conversationId}`),
   },
   users: {
     me: () => get('/users/me'),
