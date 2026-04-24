@@ -200,4 +200,68 @@ describe('NotesPage', () => {
     await act(async () => { root.render(<NotesPage />) })
     expect(container.textContent).toContain('불러오는 중')
   })
+
+  it('길게 누르기(pointerdown 500ms) → 다중 선택 모드 진입', async () => {
+    vi.useFakeTimers()
+    const conv = makeConversation({ id: 'c1', auto_title: '이차방정식' })
+    vi.stubGlobal('fetch', mockApi([conv], []))
+
+    await act(async () => { root.render(<NotesPage />) })
+    await act(async () => { await Promise.resolve() })
+
+    const card = container.querySelector('[data-testid="note-card"]') as HTMLElement
+    act(() => { card.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+    act(() => { vi.advanceTimersByTime(500) })
+
+    expect(container.querySelector('[data-testid="select-bar"]')).not.toBeNull()
+    expect(container.querySelector('[data-testid="note-select-checkbox"]')).not.toBeNull()
+
+    vi.useRealTimers()
+  })
+
+  it('다중 선택 모드: 카드 클릭으로 선택 토글', async () => {
+    vi.useFakeTimers()
+    const convs = [
+      makeConversation({ id: 'c1', auto_title: '문제1' }),
+      makeConversation({ id: 'c2', auto_title: '문제2' }),
+    ]
+    vi.stubGlobal('fetch', mockApi(convs, []))
+
+    await act(async () => { root.render(<NotesPage />) })
+    await act(async () => { await Promise.resolve() })
+
+    const cards = container.querySelectorAll('[data-testid="note-card"]')
+    // 첫 번째 카드 길게 눌러서 선택 모드 진입
+    act(() => { cards[0].dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+    act(() => { vi.advanceTimersByTime(500) })
+
+    // 두 번째 카드 클릭 → 선택 추가
+    await act(async () => { (cards[1] as HTMLElement).click() })
+
+    const selectCount = container.querySelector('[data-testid="select-bar"]')?.textContent
+    expect(selectCount).toContain('2개 선택됨')
+
+    vi.useRealTimers()
+  })
+
+  it('다중 선택 모드: ✕ 버튼 클릭 → 선택 해제 후 탭 복원', async () => {
+    vi.useFakeTimers()
+    const conv = makeConversation({ id: 'c1' })
+    vi.stubGlobal('fetch', mockApi([conv], []))
+
+    await act(async () => { root.render(<NotesPage />) })
+    await act(async () => { await Promise.resolve() })
+
+    const card = container.querySelector('[data-testid="note-card"]') as HTMLElement
+    act(() => { card.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+    act(() => { vi.advanceTimersByTime(500) })
+
+    const exitBtn = container.querySelector('[data-testid="exit-select-btn"]') as HTMLButtonElement
+    await act(async () => { exitBtn.click() })
+
+    expect(container.querySelector('[data-testid="select-bar"]')).toBeNull()
+    expect(container.querySelector('[data-testid="notes-tabs"]')).not.toBeNull()
+
+    vi.useRealTimers()
+  })
 })
