@@ -14,29 +14,29 @@
 | 기술 스택·환경변수 | `docs/architecture/tech-stack.md` |
 | AI 프로바이더·역할 | `docs/architecture/ai-providers.md` |
 | DB 스키마 | `docs/architecture/data-model.md` |
-| 현재 스프린트 작업 | `docs/sprints/week-1-backend-skeleton.md` |
+| 현재 스프린트 작업 | `docs/sprints/week-5-notes.md` |
 | 색상·타이포·컴포넌트 | `design-system/INDEX.md` |
 | 전체 문서 인덱스 | `docs/README.md` |
 
 ---
 
-## 현재 스프린트: Week 1 — Backend Skeleton
+## 현재 스프린트: Week 5 — Polish 1: 풀이 노트
 
-**목표**: 빈 요청이 들어와서 빈 응답이 나가는 완전한 파이프라인 완성
+**목표**: 대화방이 즐겨찾기·이름·목록으로 개인 자산이 된다
 
 **이번 주 해야 할 것**
-- Hono 프로젝트 코드 + API 라우팅 뼈대 (`/api/v1/{problems,conversations,folders,users}` → 501)
-- Supabase 마이그레이션 SQL 파일 작성 (실행은 Week 8)
-- JWT 인증 미들웨어, 레이트리밋, 에러 핸들링, Sentry 스텁
-- 프론트: 새 프로젝트 구조·라우팅·API 클라이언트 코드 작성
+- PATCH /conversations/:id (is_favorite, title) + DELETE 소프트 삭제 ✅
+- nameNote AI role (Gemini Flash, 자동 제목 생성) ✅
+- 폴더 CRUD + 대화-폴더 다대다 관계 ✅
+- NotesPage (최근/즐겨찾기/목록 탭) + FolderPage ✅
+- FolderBottomSheet, AddToFolderSheet, RenameModal ✅
 
 **이번 주 금지**
-- AI 호출 구현 (Week 2)
-- 문제 분석·대화 기능 (Week 3~4)
-- 노트·폴더 기능 (Week 5)
-- 결제 관련 코드 (Week 6)
+- 유사 문제 생성 (Week 6)
+- 결제 UI (Week 6)
+- 노트 공유 링크 (Phase 2)
 
-작업 전 `docs/sprints/week-1-backend-skeleton.md` 체크리스트를 확인하세요.
+작업 전 `docs/sprints/week-5-notes.md` 체크리스트를 확인하세요.
 
 ---
 
