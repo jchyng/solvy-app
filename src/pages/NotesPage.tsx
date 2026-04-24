@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { X, Star, FolderPlus } from 'lucide-react'
 import type { ConversationSummary, Folder } from '@/types/api'
 import { api } from '@/services/api'
 import { NoteCard, FolderCard, FolderBottomSheet, AddToFolderSheet } from '@/features/notes'
@@ -114,9 +115,9 @@ export default function NotesPage() {
           <button
             data-testid="exit-select-btn"
             onClick={exitSelectMode}
-            style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: 'var(--ink)' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink)', display: 'flex' }}
           >
-            ✕
+            <X size={20} />
           </button>
           <span style={{ flex: 1, fontWeight: 600, color: 'var(--ink)' }}>
             {selectedIds.size}개 선택됨
@@ -127,7 +128,7 @@ export default function NotesPage() {
             disabled={selectedIds.size === 0}
             style={batchBtn}
           >
-            ★
+            <Star size={20} />
           </button>
           <button
             data-testid="batch-folder-btn"
@@ -135,7 +136,7 @@ export default function NotesPage() {
             disabled={selectedIds.size === 0}
             style={batchBtn}
           >
-            ⎘
+            <FolderPlus size={20} />
           </button>
           <button
             data-testid="batch-delete-btn"
@@ -262,7 +263,8 @@ const batchBtn: React.CSSProperties = {
   border: 'none',
   borderRadius: 8,
   padding: '6px 12px',
-  fontSize: 15,
   cursor: 'pointer',
   color: 'var(--ink)',
+  display: 'flex',
+  alignItems: 'center',
 }

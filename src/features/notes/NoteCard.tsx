@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Star } from 'lucide-react'
 import type { ConversationSummary } from '@/types/api'
 import { getDisplayTitle } from '@/types/api'
 
@@ -116,13 +117,16 @@ export function NoteCard({ conversation, onFavoriteToggle, isSelecting, isSelect
             background: 'none',
             border: 'none',
             cursor: 'pointer',
-            fontSize: 18,
-            color: conversation.is_favorite ? 'var(--favorite)' : 'var(--ink-4)',
             padding: 4,
             flexShrink: 0,
+            display: 'flex',
           }}
         >
-          ★
+          <Star
+            size={18}
+            color={conversation.is_favorite ? 'var(--favorite)' : 'var(--ink-4)'}
+            fill={conversation.is_favorite ? 'var(--favorite)' : 'none'}
+          />
         </button>
       )}
     </div>

@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { Camera, Image } from 'lucide-react'
 import { useProblemStore } from '@/stores/problemStore'
 
 export function UploadView() {
@@ -54,9 +55,12 @@ export function UploadView() {
               padding: '12px 20px',
               fontSize: 'var(--text-body)',
               cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
             }}
           >
-            📷 카메라
+            <Camera size={18} /> 카메라
           </button>
           <button
             onClick={() => albumRef.current?.click()}
@@ -68,9 +72,12 @@ export function UploadView() {
               padding: '12px 20px',
               fontSize: 'var(--text-body)',
               cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
             }}
           >
-            🖼 앨범
+            <Image size={18} /> 앨범
           </button>
         </div>
 

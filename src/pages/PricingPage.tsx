@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, ChevronRight } from 'lucide-react'
 
 interface Plan {
   id: 'free' | 'light' | 'pro'
@@ -56,7 +57,7 @@ export default function PricingPage() {
         style={backBtn}
         data-testid="back-btn"
       >
-        ← 뒤로
+        <ArrowLeft size={16} /> 뒤로
       </button>
 
       <div style={{ marginTop: '24px', marginBottom: '8px', textAlign: 'center' }}>
@@ -178,9 +179,12 @@ export default function PricingPage() {
             fontSize: 'var(--text-body)',
             cursor: 'pointer',
             textDecoration: 'underline',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '2px',
           }}
         >
-          Founding Member 혜택 보기 →
+          Founding Member 혜택 보기 <ChevronRight size={16} />
         </button>
       </div>
     </main>
@@ -194,4 +198,7 @@ const backBtn: React.CSSProperties = {
   fontSize: 'var(--text-body)',
   cursor: 'pointer',
   padding: '0',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '4px',
 }

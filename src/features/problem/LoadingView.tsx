@@ -1,3 +1,4 @@
+import { Check, Loader2 } from 'lucide-react'
 import type { UploadPhase } from '@/stores/problemStore'
 
 interface Props {
@@ -72,7 +73,11 @@ export function LoadingView({ phase, errorMessage }: Props) {
                   flexShrink: 0,
                 }}
               >
-                {done ? '✓' : active ? '…' : ''}
+                {done ? (
+                  <Check size={12} strokeWidth={2.5} />
+                ) : active ? (
+                  <Loader2 size={12} style={{ animation: 'spin 1s linear infinite' }} />
+                ) : null}
               </div>
               <span
                 style={{
@@ -87,6 +92,7 @@ export function LoadingView({ phase, errorMessage }: Props) {
           )
         })}
       </div>
+      <style>{`@keyframes spin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }`}</style>
     </main>
   )
 }

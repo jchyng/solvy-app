@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Star, Pencil, FolderPlus } from 'lucide-react'
 import type { AnalysisResult, FollowUpQuestion } from '@/types/api'
 
 interface Props {
@@ -22,7 +23,8 @@ export function AnalysisCard({ result, onFollowUp, isFavorite, onFavoriteToggle,
           disabled={!onFavoriteToggle}
           style={onFavoriteToggle ? activeBtn : placeholderBtn}
         >
-          {isFavorite ? '★ 즐겨찾기됨' : '★ 즐겨찾기'}
+          <Star size={14} fill={isFavorite ? 'var(--favorite)' : 'none'} />
+          {isFavorite ? '즐겨찾기됨' : '즐겨찾기'}
         </button>
         <button
           data-testid="action-rename"
@@ -30,7 +32,7 @@ export function AnalysisCard({ result, onFollowUp, isFavorite, onFavoriteToggle,
           disabled={!onRename}
           style={onRename ? activeBtn : placeholderBtn}
         >
-          ✎ 이름 변경
+          <Pencil size={14} /> 이름 변경
         </button>
         <button
           data-testid="action-add-to-folder"
@@ -38,7 +40,7 @@ export function AnalysisCard({ result, onFollowUp, isFavorite, onFavoriteToggle,
           disabled={!onAddToFolder}
           style={onAddToFolder ? activeBtn : placeholderBtn}
         >
-          ⎘ 목록에 추가
+          <FolderPlus size={14} /> 목록에 추가
         </button>
       </div>
 
@@ -163,6 +165,9 @@ const placeholderBtn: React.CSSProperties = {
   fontSize: 'var(--text-small)',
   cursor: 'not-allowed',
   opacity: 0.6,
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '4px',
 }
 
 const activeBtn: React.CSSProperties = {
@@ -173,6 +178,9 @@ const activeBtn: React.CSSProperties = {
   padding: '6px 12px',
   fontSize: 'var(--text-small)',
   cursor: 'pointer',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '4px',
 }
 
 const chipBtn: React.CSSProperties = {

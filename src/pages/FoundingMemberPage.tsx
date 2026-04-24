@@ -1,28 +1,36 @@
 import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, Award, Gift, Lock, CreditCard, BookOpen } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
-const benefits = [
+interface Benefit {
+  Icon: LucideIcon
+  title: string
+  description: string
+}
+
+const benefits: Benefit[] = [
   {
-    icon: '🎁',
+    Icon: Gift,
     title: '정식 출시 시 50% 할인',
     description: '첫 12개월간 모든 요금제 50% 할인 적용.',
   },
   {
-    icon: '🔒',
+    Icon: Lock,
     title: 'Pro 평생 20% 할인 lock-in',
     description: 'Pro 구독 해지 전까지 영구 20% 할인 유지.',
   },
   {
-    icon: '💳',
+    Icon: CreditCard,
     title: '크레딧 30일치 선지급',
     description: '정식 출시 시 사용 가능한 크레딧 30일치를 미리 지급합니다.',
   },
   {
-    icon: '🏅',
+    Icon: Award,
     title: 'Solvy Founding Member 뱃지',
     description: '베타 참여자임을 증명하는 특별 뱃지가 프로필에 표시됩니다.',
   },
   {
-    icon: '📚',
+    Icon: BookOpen,
     title: '노트·목록 영구 보존 보장',
     description:
       '베타 중 만든 모든 노트와 목록은 정식 출시 후에도 삭제되지 않고 완전히 보존됩니다.',
@@ -35,11 +43,13 @@ export default function FoundingMemberPage() {
   return (
     <main style={{ minHeight: '100dvh', padding: '32px 16px', maxWidth: '640px', margin: '0 auto' }}>
       <button onClick={() => navigate(-1)} style={backBtn} data-testid="back-btn">
-        ← 뒤로
+        <ArrowLeft size={16} /> 뒤로
       </button>
 
       <div style={{ marginTop: '24px', marginBottom: '32px', textAlign: 'center' }}>
-        <div style={{ fontSize: '40px', marginBottom: '12px' }}>🏅</div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+          <Award size={48} style={{ color: 'var(--accent)' }} />
+        </div>
         <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--ink)', margin: '0 0 12px' }}>
           Solvy Founding Member
         </h1>
@@ -68,7 +78,7 @@ export default function FoundingMemberPage() {
               background: 'var(--bg-elevated)',
             }}
           >
-            <span style={{ fontSize: '28px', flexShrink: 0 }}>{b.icon}</span>
+            <b.Icon size={24} style={{ color: 'var(--accent)', flexShrink: 0, marginTop: 2 }} />
             <div>
               <h3 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 700 }}>{b.title}</h3>
               <p style={{ margin: 0, color: 'var(--ink-2)', fontSize: 'var(--text-body)', lineHeight: 1.5 }}>
@@ -103,4 +113,7 @@ const backBtn: React.CSSProperties = {
   fontSize: 'var(--text-body)',
   cursor: 'pointer',
   padding: '0',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '4px',
 }

@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { ArrowLeft } from 'lucide-react'
 import type { ConversationSummary, Folder } from '@/types/api'
 import { api } from '@/services/api'
 import { NoteCard, FolderBottomSheet } from '@/features/notes'
@@ -66,13 +67,13 @@ export default function FolderPage() {
           style={{
             background: 'none',
             border: 'none',
-            fontSize: 20,
             cursor: 'pointer',
             color: 'var(--ink)',
             padding: 4,
+            display: 'flex',
           }}
         >
-          ←
+          <ArrowLeft size={20} />
         </button>
 
         {folder && (
