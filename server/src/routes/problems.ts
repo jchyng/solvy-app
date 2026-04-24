@@ -96,4 +96,28 @@ problems.post('/:id/confirm', async (c) => {
   return c.json({ id, status: 'analyzing' }, 202)
 })
 
+// 유사 문제 "이 문제도 새 대화로 시작하기" — 이미지 없이 텍스트만으로 새 분석 시작
+problems.post('/from-text', async (c) => {
+  const userId = c.get('userId')
+  const body = await c.req.json<{ text?: string }>()
+  if (typeof body.text !== 'string' || !body.text.trim()) {
+    throw Errors.badRequest('text 필드가 필요합니다')
+  }
+
+  const db = createDbClient(c.env)
+  const session = await db.sessions.create({
+    userId,
+    imageUrl: null,
+    initialStatus: 'analyzing',
+    initialRecognizedProblem: { text: body.text },
+  })
+
+  const supabase = createClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_KEY)
+  const ai = createAI(c.env, supabase)
+  const pipeline = runPipelineFromClassify(session.id, body.text, userId, { ai, db })
+  try { c.executionCtx.waitUntil(pipeline) } catch { void pipeline }
+
+  return c.json({ id: session.id, status: 'analyzing' }, 202)
+})
+
 export { problems }

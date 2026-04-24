@@ -4,7 +4,9 @@ import type { ProblemSession, Conversation, Message, Folder } from './types.js';
 
 export interface CreateSessionData {
   userId: string
-  imageUrl: string
+  imageUrl: string | null
+  initialStatus?: 'uploading' | 'analyzing'
+  initialRecognizedProblem?: { text: string } | null
 }
 
 export interface CreateConversationData {
@@ -83,10 +85,15 @@ export function createDbClient(env: Bindings): DbClient {
 
   return {
     sessions: {
-      async create({ userId, imageUrl }) {
+      async create({ userId, imageUrl, initialStatus = 'uploading', initialRecognizedProblem = null }) {
         const { data, error } = await supabase
           .from('problem_sessions')
-          .insert({ user_id: userId, original_image_url: imageUrl, status: 'uploading' })
+          .insert({
+            user_id: userId,
+            original_image_url: imageUrl,
+            status: initialStatus,
+            recognized_problem: initialRecognizedProblem,
+          })
           .select()
           .single();
         if (error) throw new Error(error.message);

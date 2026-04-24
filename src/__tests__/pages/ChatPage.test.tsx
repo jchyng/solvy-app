@@ -6,6 +6,7 @@ import { act } from 'react'
 // react-router-dom mock
 vi.mock('react-router-dom', () => ({
   useParams: vi.fn().mockReturnValue({ id: 'conv-test-1' }),
+  useNavigate: vi.fn().mockReturnValue(vi.fn()),
 }))
 
 // userStore mock

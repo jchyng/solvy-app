@@ -240,3 +240,91 @@ describe('POST /api/v1/problems/:id/confirm', () => {
     expect(res.status).toBe(403)
   })
 })
+
+// ────────────────────────────────────────────────────────────────────────────
+describe('POST /api/v1/problems/from-text', () => {
+  it('유효한 텍스트 → 202 + sessionId 반환', async () => {
+    const { mockDb } = setupMocks()
+    mockDb.sessions.create.mockResolvedValue({
+      ...makeSession(USER_ID, 'analyzing'),
+      original_image_url: null,
+    })
+
+    const res = await authed('POST', '/api/v1/problems/from-text', {
+      text: 'x² - 5x + 6 = 0을 풀어라',
+    })
+
+    expect(res.status).toBe(202)
+    const body = await res.json() as { id: string; status: string }
+    expect(body.id).toBe(SESSION_ID)
+    expect(body.status).toBe('analyzing')
+  })
+
+  it('original_image_url = null로 세션 생성됨', async () => {
+    const { mockDb } = setupMocks()
+    mockDb.sessions.create.mockResolvedValue({
+      ...makeSession(USER_ID, 'analyzing'),
+      original_image_url: null,
+    })
+
+    await authed('POST', '/api/v1/problems/from-text', {
+      text: '유사 문제 텍스트',
+    })
+
+    expect(mockDb.sessions.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        imageUrl: null,
+        initialStatus: 'analyzing',
+      }),
+    )
+  })
+
+  it('recognised_problem이 텍스트로 초기화됨', async () => {
+    const { mockDb } = setupMocks()
+    const text = '이차방정식 문제'
+
+    await authed('POST', '/api/v1/problems/from-text', { text })
+
+    expect(mockDb.sessions.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        initialRecognizedProblem: { text },
+      }),
+    )
+  })
+
+  it('파이프라인 시작됨 (runPipelineFromClassify 호출)', async () => {
+    setupMocks()
+
+    await authed('POST', '/api/v1/problems/from-text', {
+      text: '유사 문제입니다',
+    })
+
+    expect(runPipelineFromClassify).toHaveBeenCalledOnce()
+  })
+
+  it('text 필드 없음 → 400', async () => {
+    setupMocks()
+    const res = await authed('POST', '/api/v1/problems/from-text', {})
+    expect(res.status).toBe(400)
+  })
+
+  it('text 빈 문자열 → 400', async () => {
+    setupMocks()
+    const res = await authed('POST', '/api/v1/problems/from-text', { text: '   ' })
+    expect(res.status).toBe(400)
+  })
+
+  it('인증 없음 → 401', async () => {
+    setupMocks()
+    const res = await app.request(
+      '/api/v1/problems/from-text',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: '문제' }),
+      },
+      testEnv as never,
+    )
+    expect(res.status).toBe(401)
+  })
+})

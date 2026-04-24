@@ -1,19 +1,21 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { AnalysisCard } from '@/features/problem/AnalysisCard'
 import { AddToFolderSheet, RenameModal } from '@/features/notes'
+import { SimilarProblemCard } from '@/features/similar'
 import { MarkdownView } from '@/shared/components/MarkdownView'
 import { useUserStore } from '@/stores/userStore'
 import { api } from '@/services/api'
-import type { MessageResponse, FollowUpQuestion, SSEEvent, ConversationWithMessages, Folder } from '@/types/api'
+import type {
+  MessageResponse,
+  FollowUpQuestion,
+  SSEEvent,
+  ConversationWithMessages,
+  Folder,
+} from '@/types/api'
+import { isSimilarProblemPayload, isAnalysisResult } from '@/types/api'
 
 const BASE = import.meta.env.VITE_API_URL ?? '/api/v1'
-
-function isAnalysisResult(v: unknown): v is import('@/types/api').AnalysisResult {
-  if (!v || typeof v !== 'object') return false
-  const r = v as Record<string, unknown>
-  return typeof r['intent'] === 'string' && Array.isArray(r['concepts'])
-}
 
 function TypingIndicator() {
   return (
@@ -39,8 +41,15 @@ function TypingIndicator() {
   )
 }
 
+const SIMILAR_KEYWORDS = ['비슷한', '유사']
+
+function isSimilarQuestion(label: string): boolean {
+  return SIMILAR_KEYWORDS.some((kw) => label.includes(kw))
+}
+
 export default function ChatPage() {
   const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
   const [messages, setMessages] = useState<MessageResponse[]>([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -57,6 +66,10 @@ export default function ChatPage() {
   const [showAddToFolder, setShowAddToFolder] = useState(false)
   const [folders, setFolders] = useState<Folder[]>([])
   const [convFolderIds, setConvFolderIds] = useState(new Set<string>())
+
+  // 유사 문제 난이도 선택 UI
+  const [showDifficultySelector, setShowDifficultySelector] = useState(false)
+  const [isGeneratingSimilar, setIsGeneratingSimilar] = useState(false)
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -83,7 +96,6 @@ export default function ChatPage() {
       })
   }, [id, token])
 
-  // 새 메시지 / 스트리밍 중 자동 스크롤
   useEffect(() => {
     if (isAtBottom) {
       bottomRef.current?.scrollIntoView?.({ behavior: 'smooth' })
@@ -197,6 +209,10 @@ export default function ChatPage() {
   }
 
   const handleFollowUp = (q: FollowUpQuestion) => {
+    if (isSimilarQuestion(q.label)) {
+      setShowDifficultySelector(true)
+      return
+    }
     sendMessage(q.label)
   }
 
@@ -239,6 +255,45 @@ export default function ChatPage() {
     } else {
       setConvFolderIds((prev) => { const s = new Set(prev); s.delete(folderId); return s })
       await api.folders.removeConversation(folderId, id)
+    }
+  }
+
+  const handleDifficultySelect = async (difficulty: 'same' | 'up' | 'down') => {
+    if (!id || isGeneratingSimilar) return
+    setShowDifficultySelector(false)
+    setIsGeneratingSimilar(true)
+    try {
+      const res = await api.conversations.similarProblem(id, difficulty)
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const newMsg = await res.json() as MessageResponse
+      setMessages((prev) => [...prev, newMsg])
+    } catch {
+      setStreamError('유사 문제 생성 오류')
+    } finally {
+      setIsGeneratingSimilar(false)
+    }
+  }
+
+  const handleStartNewChat = async (problemText: string) => {
+    try {
+      const res = await api.problems.fromText(problemText)
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const { id: sessionId } = await res.json() as { id: string }
+
+      // 상태 폴링 — 완료되면 새 대화방으로 이동
+      const poll = async () => {
+        const statusRes = await api.problems.status(sessionId)
+        if (!statusRes.ok) return
+        const { status, conversationId } = await statusRes.json() as { status: string; conversationId?: string }
+        if (status === 'done' && conversationId) {
+          navigate(`/chat/${conversationId}`)
+        } else if (status !== 'error') {
+          setTimeout(poll, 1500)
+        }
+      }
+      setTimeout(poll, 1000)
+    } catch {
+      // 생성 실패는 조용히 처리 (사용자가 수동으로 재시도 가능)
     }
   }
 
@@ -290,6 +345,17 @@ export default function ChatPage() {
         {messages.map((msg, idx) => {
           if (msg.role === 'system') return null
 
+          if (msg.role === 'assistant' && isSimilarProblemPayload(msg.structured_payload)) {
+            return (
+              <div key={msg.id} data-testid="similar-problem-bubble">
+                <SimilarProblemCard
+                  payload={msg.structured_payload}
+                  onStartNewChat={handleStartNewChat}
+                />
+              </div>
+            )
+          }
+
           if (msg.role === 'assistant' && isAnalysisResult(msg.structured_payload)) {
             return (
               <div key={msg.id}>
@@ -340,6 +406,35 @@ export default function ChatPage() {
           )
         })}
 
+        {/* 난이도 선택 칩 */}
+        {showDifficultySelector && (
+          <div
+            data-testid="difficulty-selector"
+            style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}
+          >
+            <span style={{ color: 'var(--ink-2)', fontSize: 'var(--text-small, 13px)', width: '100%' }}>
+              난이도를 선택하세요
+            </span>
+            {(['same', 'up', 'down'] as const).map((d) => (
+              <button
+                key={d}
+                onClick={() => handleDifficultySelect(d)}
+                data-testid={`difficulty-${d}`}
+                style={chipStyle}
+              >
+                {d === 'same' ? '같은 난이도' : d === 'up' ? '한 단계 위' : '한 단계 아래'}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* 유사 문제 생성 중 */}
+        {isGeneratingSimilar && (
+          <div style={assistantBubble} data-testid="generating-similar">
+            <TypingIndicator />
+          </div>
+        )}
+
         {/* 스트리밍 중 말풍선 */}
         {isStreaming && (
           <div style={assistantBubble} data-testid="streaming-bubble">
@@ -351,7 +446,6 @@ export default function ChatPage() {
           </div>
         )}
 
-        {/* 에러 + 재시도 버튼 */}
         {streamError && (
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start' }}

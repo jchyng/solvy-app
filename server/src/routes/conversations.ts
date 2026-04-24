@@ -189,4 +189,65 @@ conversations.post('/:id/messages', async (c) => {
   })
 })
 
+// POST /:id/similar-problem
+// 구현 방식: 기존 대화의 분석 컨텍스트를 기반으로 AI가 유사 문제를 생성하고
+// 결과를 현재 대화의 assistant 메시지로 저장. SSE 불필요(단일 원자 응답).
+conversations.post('/:id/similar-problem', async (c) => {
+  const userId = c.get('userId')
+  const { id: convId } = c.req.param()
+
+  const body = await c.req.json<{ difficulty?: string }>()
+  const { difficulty } = body
+  if (!difficulty || !['same', 'up', 'down'].includes(difficulty)) {
+    throw Errors.badRequest('difficulty 필드는 same | up | down 중 하나여야 합니다')
+  }
+
+  const db = createDbClient(c.env)
+  const conv = await db.conversations.findById(convId)
+  if (!conv) throw Errors.notFound('conversation')
+  if (conv.user_id !== userId) throw Errors.forbidden()
+
+  const allMessages = await db.messages.listByConversation(convId)
+  const firstAssistant = allMessages.find((m) => m.role === 'assistant')
+  const payload = firstAssistant?.structured_payload as Record<string, unknown> | null | undefined
+
+  const problemContext = {
+    recognizedProblem:
+      typeof payload?.['intent'] === 'string' ? payload['intent'] : '(알 수 없는 문제)',
+    concepts: Array.isArray(payload?.['concepts']) ? (payload['concepts'] as string[]) : [],
+    optimalSolutionSummary: Array.isArray(
+      (payload?.['optimal_solution'] as Record<string, unknown> | undefined)?.['steps'],
+    )
+      ? (
+          (payload!['optimal_solution'] as Record<string, unknown>)[
+            'steps'
+          ] as Array<{ title: string }>
+        )
+          .map((s) => s.title)
+          .join(', ')
+      : '',
+  }
+
+  const supabase = createClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_KEY)
+  const ai = createAI(c.env, supabase)
+
+  const result = await ai.generateSimilar({
+    difficulty: difficulty as 'same' | 'up' | 'down',
+    problemContext,
+    userId,
+    sessionId: convId,
+  })
+
+  const message = await db.messages.create({
+    conversationId: convId,
+    role: 'assistant',
+    content: result.problem,
+    structuredPayload: result,
+  })
+
+  await db.conversations.updateLastMessageAt(convId)
+
+  return c.json(message, 201)
+})
+
 export { conversations }

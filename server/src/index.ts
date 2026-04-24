@@ -34,8 +34,8 @@ v1.route('/conversations', conversations)
 v1.route('/folders', folders)
 v1.route('/users', users)
 
-app.route('/api/v1', v1)
 app.route('/api/v1/webhooks', webhooks)
+app.route('/api/v1', v1)
 
 app.onError(errorHandler)
 

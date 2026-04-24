@@ -44,6 +44,7 @@ export const api = {
     get: (id: string) => get(`/problems/${id}`),
     status: (id: string) => get(`/problems/${id}/status`),
     confirm: (id: string, body: { text: string }) => post(`/problems/${id}/confirm`, body),
+    fromText: (text: string) => post('/problems/from-text', { text }),
   },
   conversations: {
     list: () => get('/conversations'),
@@ -52,6 +53,8 @@ export const api = {
     delete: (id: string) => del(`/conversations/${id}`),
     messages: (id: string) => get(`/conversations/${id}/messages`),
     sendMessage: (id: string, body: unknown) => post(`/conversations/${id}/messages`, body),
+    similarProblem: (id: string, difficulty: 'same' | 'up' | 'down') =>
+      post(`/conversations/${id}/similar-problem`, { difficulty }),
   },
   folders: {
     list: () => get('/folders'),

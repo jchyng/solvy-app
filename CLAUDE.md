@@ -14,29 +14,31 @@
 | 기술 스택·환경변수 | `docs/architecture/tech-stack.md` |
 | AI 프로바이더·역할 | `docs/architecture/ai-providers.md` |
 | DB 스키마 | `docs/architecture/data-model.md` |
-| 현재 스프린트 작업 | `docs/sprints/week-5-notes.md` |
+| 현재 스프린트 작업 | `docs/sprints/week-6-similar-and-payment.md` |
 | 색상·타이포·컴포넌트 | `design-system/INDEX.md` |
 | 전체 문서 인덱스 | `docs/README.md` |
 
 ---
 
-## 현재 스프린트: Week 5 — Polish 1: 풀이 노트
+## 현재 스프린트: Week 6 — Polish 2: 유사 문제 생성 + 결제 준비
 
-**목표**: 대화방이 즐겨찾기·이름·목록으로 개인 자산이 된다
+**목표**: 유사 문제 생성이 대화 안에서 자연스럽게 이어진다, 결제 스택이 세팅되어 즉시 활성화 가능하다
 
 **이번 주 해야 할 것**
-- PATCH /conversations/:id (is_favorite, title) + DELETE 소프트 삭제 ✅
-- nameNote AI role (Gemini Flash, 자동 제목 생성) ✅
-- 폴더 CRUD + 대화-폴더 다대다 관계 ✅
-- NotesPage (최근/즐겨찾기/목록 탭) + FolderPage ✅
-- FolderBottomSheet, AddToFolderSheet, RenameModal ✅
+- generateSimilar role (OpenRouter DeepSeek V3) ✅
+- POST /conversations/:id/similar-problem (3단계 난이도) ✅
+- POST /problems/from-text ("이 문제도 새 대화로") ✅
+- Toss Payments webhook stub ✅
+- PricingPage (Free/Light/Pro) + FoundingMemberPage ✅
+- SimilarProblemCard (문제·답·풀이 토글) ✅
+- ChatPage 난이도 선택 칩 + similar_problem 렌더링 ✅
 
 **이번 주 금지**
-- 유사 문제 생성 (Week 6)
-- 결제 UI (Week 6)
-- 노트 공유 링크 (Phase 2)
+- 결제 로직 활성화 (베타 후)
+- 새 제품 기능 (Week 7은 Hardening)
+- 과목 확장 (Phase 2)
 
-작업 전 `docs/sprints/week-5-notes.md` 체크리스트를 확인하세요.
+작업 전 `docs/sprints/week-6-similar-and-payment.md` 체크리스트를 확인하세요.
 
 ---
 

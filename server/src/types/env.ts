@@ -14,4 +14,6 @@ export interface Bindings {
   // R2 이미지 스토리지
   IMAGES_BUCKET: R2Bucket
   IMAGES_PUBLIC_URL: string
+  // 결제 (Week 6 stub — Week 8에서 실제 키 등록)
+  TOSS_PAYMENTS_SECRET_KEY?: string
 }

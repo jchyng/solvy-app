@@ -5,13 +5,22 @@ export type { AnalysisResult };
 export interface ProblemSession {
   id: string
   user_id: string
-  original_image_url: string
+  original_image_url: string | null
   status: 'uploading' | 'analyzing' | 'confirming' | 'done' | 'error'
   recognized_problem: { text: string; confidence?: number } | null
   classification: { difficulty: string; concepts: string[] } | null
   analysis_result: AnalysisResult | null
   created_at: string
   completed_at: string | null
+}
+
+export interface Subscription {
+  id: string
+  user_id: string
+  plan: 'free' | 'light' | 'pro'
+  status: 'active' | 'canceled' | 'past_due'
+  current_period_end: string | null
+  created_at: string
 }
 
 export interface Conversation {

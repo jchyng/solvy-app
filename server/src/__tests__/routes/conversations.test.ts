@@ -487,3 +487,166 @@ describe('DELETE /api/v1/conversations/:id (소프트 삭제)', () => {
     expect(body.data).toHaveLength(0)
   })
 })
+
+// ────────────────────────────────────────────────────────────────────────────
+describe('POST /api/v1/conversations/:id/similar-problem', () => {
+  const mockGenerateSimilar = vi.fn().mockResolvedValue({
+    type: 'similar_problem',
+    problem: 'x² - 7x + 12 = 0을 풀어라',
+    answer: 'x = 3 또는 x = 4',
+    solution: '## 풀이\n인수분해: (x-3)(x-4)=0',
+    difficulty: 'same',
+  })
+
+  const analysisPayload = {
+    intent: '이차방정식 풀이',
+    concepts: ['이차방정식', '인수분해'],
+    optimal_solution: { steps: [{ title: '인수분해', detail: '상세' }] },
+    exam_tips: [],
+    follow_up_questions: [],
+    confidence: 0.95,
+  }
+
+  function setupSimilarMocks() {
+    const mockDb = buildMockDb()
+    mockDb.messages.listByConversation.mockResolvedValue([
+      makeMessage('assistant', MSG_ID_1, { structured_payload: analysisPayload }),
+    ])
+    mockDb.messages.create.mockResolvedValue(
+      makeMessage('assistant', 'msg-similar-1', {
+        content: 'x² - 7x + 12 = 0을 풀어라',
+        structured_payload: {
+          type: 'similar_problem',
+          problem: 'x² - 7x + 12 = 0을 풀어라',
+          answer: 'x = 3 또는 x = 4',
+          solution: '풀이',
+          difficulty: 'same',
+        },
+      }),
+    )
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+    vi.mocked(createAI).mockReturnValue({ generateSimilar: mockGenerateSimilar } as never)
+    return mockDb
+  }
+
+  it('유효한 요청 → 201 + assistant 메시지 반환', async () => {
+    setupSimilarMocks()
+
+    const res = await authed('POST', `/api/v1/conversations/${CONV_ID}/similar-problem`, {
+      difficulty: 'same',
+    })
+
+    expect(res.status).toBe(201)
+    const body = await res.json() as { structured_payload: { type: string } }
+    expect(body.structured_payload?.type).toBe('similar_problem')
+  })
+
+  it('difficulty = up → generateSimilar에 up 전달', async () => {
+    const mockDb = setupSimilarMocks()
+    vi.mocked(createAI).mockReturnValue({ generateSimilar: mockGenerateSimilar } as never)
+
+    await authed('POST', `/api/v1/conversations/${CONV_ID}/similar-problem`, {
+      difficulty: 'up',
+    })
+
+    expect(mockGenerateSimilar).toHaveBeenCalledWith(
+      expect.objectContaining({ difficulty: 'up' }),
+    )
+    expect(mockDb.messages.create).toHaveBeenCalledWith(
+      expect.objectContaining({ role: 'assistant' }),
+    )
+  })
+
+  it('difficulty = down → generateSimilar에 down 전달', async () => {
+    setupSimilarMocks()
+
+    await authed('POST', `/api/v1/conversations/${CONV_ID}/similar-problem`, {
+      difficulty: 'down',
+    })
+
+    expect(mockGenerateSimilar).toHaveBeenCalledWith(
+      expect.objectContaining({ difficulty: 'down' }),
+    )
+  })
+
+  it('difficulty 누락 → 400', async () => {
+    const mockDb = buildMockDb()
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+
+    const res = await authed('POST', `/api/v1/conversations/${CONV_ID}/similar-problem`, {})
+    expect(res.status).toBe(400)
+  })
+
+  it('잘못된 difficulty 값 → 400', async () => {
+    const mockDb = buildMockDb()
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+
+    const res = await authed('POST', `/api/v1/conversations/${CONV_ID}/similar-problem`, {
+      difficulty: 'extreme',
+    })
+    expect(res.status).toBe(400)
+  })
+
+  it('다른 유저 → 403', async () => {
+    const mockDb = buildMockDb()
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+
+    const res = await authed(
+      'POST',
+      `/api/v1/conversations/${CONV_ID}/similar-problem`,
+      { difficulty: 'same' },
+      OTHER_USER_ID,
+    )
+    expect(res.status).toBe(403)
+  })
+
+  it('존재하지 않는 대화방 → 404', async () => {
+    const mockDb = buildMockDb()
+    mockDb.conversations.findById.mockResolvedValue(null)
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+
+    const res = await authed('POST', '/api/v1/conversations/nonexistent/similar-problem', {
+      difficulty: 'same',
+    })
+    expect(res.status).toBe(404)
+  })
+
+  it('생성 결과를 assistant 메시지로 저장하고 structured_payload 포함', async () => {
+    const mockDb = setupSimilarMocks()
+
+    const res = await authed('POST', `/api/v1/conversations/${CONV_ID}/similar-problem`, {
+      difficulty: 'same',
+    })
+    await res.json()
+
+    expect(mockDb.messages.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        role: 'assistant',
+        structuredPayload: expect.objectContaining({ type: 'similar_problem' }),
+      }),
+    )
+  })
+
+  it('생성 후 last_message_at 업데이트', async () => {
+    const mockDb = setupSimilarMocks()
+
+    await authed('POST', `/api/v1/conversations/${CONV_ID}/similar-problem`, {
+      difficulty: 'same',
+    })
+
+    expect(mockDb.conversations.updateLastMessageAt).toHaveBeenCalledWith(CONV_ID)
+  })
+
+  it('인증 없음 → 401', async () => {
+    const res = await app.request(
+      `/api/v1/conversations/${CONV_ID}/similar-problem`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ difficulty: 'same' }),
+      },
+      testEnv as never,
+    )
+    expect(res.status).toBe(401)
+  })
+})

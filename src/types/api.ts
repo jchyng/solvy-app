@@ -34,14 +34,33 @@ export interface ProblemStatusResponse {
   conversationId?: string
 }
 
+export interface SimilarProblemPayload {
+  type: 'similar_problem'
+  problem: string
+  answer: string
+  solution: string
+  difficulty: string
+}
+
 export interface MessageResponse {
   id: string
   conversation_id: string
   role: 'system' | 'assistant' | 'user'
   content: string
-  structured_payload: AnalysisResult | null
+  structured_payload: AnalysisResult | SimilarProblemPayload | null
   follow_up_questions: FollowUpQuestion[]
   created_at: string
+}
+
+export function isSimilarProblemPayload(v: unknown): v is SimilarProblemPayload {
+  if (!v || typeof v !== 'object') return false
+  return (v as Record<string, unknown>)['type'] === 'similar_problem'
+}
+
+export function isAnalysisResult(v: unknown): v is AnalysisResult {
+  if (!v || typeof v !== 'object') return false
+  const r = v as Record<string, unknown>
+  return typeof r['intent'] === 'string' && Array.isArray(r['concepts'])
 }
 
 export interface ConversationWithMessages {
