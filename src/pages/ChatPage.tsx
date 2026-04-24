@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { AnalysisCard } from '@/features/problem/AnalysisCard'
+import { AddToFolderSheet, RenameModal } from '@/features/notes'
 import { MarkdownView } from '@/shared/components/MarkdownView'
 import { useUserStore } from '@/stores/userStore'
-import type { MessageResponse, FollowUpQuestion, SSEEvent, ConversationWithMessages } from '@/types/api'
+import { api } from '@/services/api'
+import type { MessageResponse, FollowUpQuestion, SSEEvent, ConversationWithMessages, Folder } from '@/types/api'
 
 const BASE = import.meta.env.VITE_API_URL ?? '/api/v1'
 
@@ -49,6 +51,13 @@ export default function ChatPage() {
   const [isAtBottom, setIsAtBottom] = useState(true)
   const [lastFailed, setLastFailed] = useState<{ content: string; key: string } | null>(null)
 
+  const [isFavorite, setIsFavorite] = useState(false)
+  const [convTitle, setConvTitle] = useState<string | null>(null)
+  const [showRenameModal, setShowRenameModal] = useState(false)
+  const [showAddToFolder, setShowAddToFolder] = useState(false)
+  const [folders, setFolders] = useState<Folder[]>([])
+  const [convFolderIds, setConvFolderIds] = useState(new Set<string>())
+
   const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
   const token = useUserStore((s) => s.token)
@@ -64,6 +73,8 @@ export default function ChatPage() {
       })
       .then((data) => {
         setMessages(Array.isArray(data.messages) ? data.messages : [])
+        setIsFavorite(data.is_favorite)
+        setConvTitle(data.title)
         setLoading(false)
       })
       .catch(() => {
@@ -196,6 +207,41 @@ export default function ChatPage() {
     }
   }
 
+  const handleFavoriteToggle = async () => {
+    if (!id) return
+    const next = !isFavorite
+    setIsFavorite(next)
+    await api.conversations.update(id, { is_favorite: next })
+  }
+
+  const handleRename = async (title: string) => {
+    if (!id) return
+    await api.conversations.update(id, { title })
+    setConvTitle(title)
+    setShowRenameModal(false)
+  }
+
+  const handleOpenAddToFolder = async () => {
+    const res = await api.folders.list()
+    if (res.ok) {
+      const data = await res.json() as { data: Folder[] }
+      setFolders(data.data ?? [])
+    }
+    setShowAddToFolder(true)
+  }
+
+  const handleFolderToggle = async (folderId: string) => {
+    if (!id) return
+    const isAdding = !convFolderIds.has(folderId)
+    if (isAdding) {
+      setConvFolderIds((prev) => new Set([...prev, folderId]))
+      await api.folders.addConversation(folderId, id)
+    } else {
+      setConvFolderIds((prev) => { const s = new Set(prev); s.delete(folderId); return s })
+      await api.folders.removeConversation(folderId, id)
+    }
+  }
+
   const lastAssistantIdx = messages.reduce(
     (acc, msg, i) => (msg.role === 'assistant' ? i : acc),
     -1,
@@ -252,6 +298,10 @@ export default function ChatPage() {
                   onFollowUp={
                     idx === lastAssistantIdx && !isStreaming ? handleFollowUp : undefined
                   }
+                  isFavorite={isFavorite}
+                  onFavoriteToggle={handleFavoriteToggle}
+                  onRename={() => setShowRenameModal(true)}
+                  onAddToFolder={handleOpenAddToFolder}
                 />
               </div>
             )
@@ -322,6 +372,24 @@ export default function ChatPage() {
 
         <div ref={bottomRef} />
       </div>
+
+      {showRenameModal && (
+        <RenameModal
+          initialTitle={convTitle ?? ''}
+          onSave={handleRename}
+          onClose={() => setShowRenameModal(false)}
+        />
+      )}
+
+      {showAddToFolder && (
+        <AddToFolderSheet
+          folders={folders}
+          selectedFolderIds={[...convFolderIds]}
+          onToggle={handleFolderToggle}
+          onCreateNew={() => setShowAddToFolder(false)}
+          onClose={() => setShowAddToFolder(false)}
+        />
+      )}
 
       {/* 입력창 */}
       <div

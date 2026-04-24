@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { createRoot } from 'react-dom/client'
 import { act } from 'react'
 import { AnalysisCard } from '@/features/problem/AnalysisCard'
@@ -73,9 +73,42 @@ describe('AnalysisCard', () => {
     expect(container.querySelector('[data-testid="chip-area"]')).toBeNull()
   })
 
-  it('Week 5 placeholder 버튼 3개가 disabled 상태다', () => {
+  it('콜백 없이 렌더링 시 액션 버튼 3개가 disabled', () => {
     act(() => { root.render(<AnalysisCard result={mockResult} />) })
-    const disabled = container.querySelectorAll('button[disabled]')
-    expect(disabled.length).toBeGreaterThanOrEqual(3)
+    expect((container.querySelector('[data-testid="action-favorite"]') as HTMLButtonElement).disabled).toBe(true)
+    expect((container.querySelector('[data-testid="action-rename"]') as HTMLButtonElement).disabled).toBe(true)
+    expect((container.querySelector('[data-testid="action-add-to-folder"]') as HTMLButtonElement).disabled).toBe(true)
+  })
+
+  it('onFavoriteToggle 제공 시 ★ 버튼 활성화 및 클릭 호출', () => {
+    const onFavoriteToggle = vi.fn()
+    act(() => { root.render(<AnalysisCard result={mockResult} onFavoriteToggle={onFavoriteToggle} />) })
+    const btn = container.querySelector('[data-testid="action-favorite"]') as HTMLButtonElement
+    expect(btn.disabled).toBe(false)
+    act(() => { btn.click() })
+    expect(onFavoriteToggle).toHaveBeenCalledOnce()
+  })
+
+  it('isFavorite=true 이면 "즐겨찾기됨" 표시', () => {
+    act(() => { root.render(<AnalysisCard result={mockResult} isFavorite onFavoriteToggle={vi.fn()} />) })
+    expect(container.querySelector('[data-testid="action-favorite"]')?.textContent).toContain('즐겨찾기됨')
+  })
+
+  it('onRename 제공 시 ✎ 버튼 활성화 및 클릭 호출', () => {
+    const onRename = vi.fn()
+    act(() => { root.render(<AnalysisCard result={mockResult} onRename={onRename} />) })
+    const btn = container.querySelector('[data-testid="action-rename"]') as HTMLButtonElement
+    expect(btn.disabled).toBe(false)
+    act(() => { btn.click() })
+    expect(onRename).toHaveBeenCalledOnce()
+  })
+
+  it('onAddToFolder 제공 시 ⎘ 버튼 활성화 및 클릭 호출', () => {
+    const onAddToFolder = vi.fn()
+    act(() => { root.render(<AnalysisCard result={mockResult} onAddToFolder={onAddToFolder} />) })
+    const btn = container.querySelector('[data-testid="action-add-to-folder"]') as HTMLButtonElement
+    expect(btn.disabled).toBe(false)
+    act(() => { btn.click() })
+    expect(onAddToFolder).toHaveBeenCalledOnce()
   })
 })

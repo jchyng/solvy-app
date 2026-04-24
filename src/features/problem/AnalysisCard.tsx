@@ -4,18 +4,42 @@ import type { AnalysisResult, FollowUpQuestion } from '@/types/api'
 interface Props {
   result: AnalysisResult
   onFollowUp?: (q: FollowUpQuestion) => void
+  isFavorite?: boolean
+  onFavoriteToggle?: () => void
+  onRename?: () => void
+  onAddToFolder?: () => void
 }
 
-export function AnalysisCard({ result, onFollowUp }: Props) {
+export function AnalysisCard({ result, onFollowUp, isFavorite, onFavoriteToggle, onRename, onAddToFolder }: Props) {
   const [solutionOpen, setSolutionOpen] = useState(true)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      {/* Week 5 placeholder actions */}
       <div style={{ display: 'flex', gap: '8px' }}>
-        <button disabled style={placeholderBtn}>★ 즐겨찾기</button>
-        <button disabled style={placeholderBtn}>✎ 이름 변경</button>
-        <button disabled style={placeholderBtn}>⎘ 목록에 추가</button>
+        <button
+          data-testid="action-favorite"
+          onClick={onFavoriteToggle}
+          disabled={!onFavoriteToggle}
+          style={onFavoriteToggle ? activeBtn : placeholderBtn}
+        >
+          {isFavorite ? '★ 즐겨찾기됨' : '★ 즐겨찾기'}
+        </button>
+        <button
+          data-testid="action-rename"
+          onClick={onRename}
+          disabled={!onRename}
+          style={onRename ? activeBtn : placeholderBtn}
+        >
+          ✎ 이름 변경
+        </button>
+        <button
+          data-testid="action-add-to-folder"
+          onClick={onAddToFolder}
+          disabled={!onAddToFolder}
+          style={onAddToFolder ? activeBtn : placeholderBtn}
+        >
+          ⎘ 목록에 추가
+        </button>
       </div>
 
       {/* 출제 의도 */}
@@ -139,6 +163,16 @@ const placeholderBtn: React.CSSProperties = {
   fontSize: 'var(--text-small)',
   cursor: 'not-allowed',
   opacity: 0.6,
+}
+
+const activeBtn: React.CSSProperties = {
+  background: 'var(--surface-2)',
+  color: 'var(--accent)',
+  border: '1px solid var(--accent)',
+  borderRadius: '8px',
+  padding: '6px 12px',
+  fontSize: 'var(--text-small)',
+  cursor: 'pointer',
 }
 
 const chipBtn: React.CSSProperties = {
