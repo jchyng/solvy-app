@@ -33,6 +33,7 @@ function makeAI(overrides: Partial<AI> = {}): AI {
 function makeDb(): { db: DbClient; mocks: Record<string, ReturnType<typeof vi.fn>> } {
   const updateSession = vi.fn().mockResolvedValue(undefined)
   const createConversation = vi.fn().mockResolvedValue({ id: 'conv-1', problem_session_id: SESSION_ID })
+  const updateConversation = vi.fn().mockResolvedValue({ id: 'conv-1' })
   const createMessage = vi.fn().mockResolvedValue({ id: 'msg-1' })
 
   const db: DbClient = {
@@ -44,14 +45,29 @@ function makeDb(): { db: DbClient; mocks: Record<string, ReturnType<typeof vi.fn
     conversations: {
       create: createConversation,
       findBySessionId: vi.fn(),
+      findById: vi.fn(),
+      list: vi.fn(),
+      update: updateConversation,
+      updateLastMessageAt: vi.fn(),
     },
     messages: {
       create: createMessage,
       listByConversation: vi.fn(),
+      findByIdempotencyKey: vi.fn(),
+    },
+    folders: {
+      create: vi.fn(),
+      list: vi.fn(),
+      findById: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      addConversation: vi.fn(),
+      removeConversation: vi.fn(),
+      listConversations: vi.fn(),
     },
   }
 
-  return { db, mocks: { updateSession, createConversation, createMessage } }
+  return { db, mocks: { updateSession, createConversation, updateConversation, createMessage } }
 }
 
 describe('runAnalysisPipeline', () => {

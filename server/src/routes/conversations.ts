@@ -36,8 +36,39 @@ conversations.get('/:id', async (c) => {
   return c.json({ ...conv, messages })
 })
 
-conversations.patch('/:id', async (_c) => { throw Errors.notImplemented() })
-conversations.delete('/:id', async (_c) => { throw Errors.notImplemented() })
+conversations.patch('/:id', async (c) => {
+  const userId = c.get('userId')
+  const { id } = c.req.param()
+
+  const body = await c.req.json<{ title?: string | null; is_favorite?: boolean }>()
+  if (body.title === undefined && body.is_favorite === undefined) {
+    throw Errors.badRequest('title 또는 is_favorite 필드가 필요합니다')
+  }
+
+  const db = createDbClient(c.env)
+  const conv = await db.conversations.findById(id)
+  if (!conv) throw Errors.notFound('conversation')
+  if (conv.user_id !== userId) throw Errors.forbidden()
+
+  const updated = await db.conversations.update(id, {
+    ...(body.title !== undefined ? { title: body.title } : {}),
+    ...(body.is_favorite !== undefined ? { is_favorite: body.is_favorite } : {}),
+  })
+  return c.json(updated)
+})
+
+conversations.delete('/:id', async (c) => {
+  const userId = c.get('userId')
+  const { id } = c.req.param()
+
+  const db = createDbClient(c.env)
+  const conv = await db.conversations.findById(id)
+  if (!conv) throw Errors.notFound('conversation')
+  if (conv.user_id !== userId) throw Errors.forbidden()
+
+  await db.conversations.update(id, { deleted_at: new Date().toISOString() })
+  return c.body(null, 204)
+})
 
 conversations.get('/:id/messages', async (c) => {
   const userId = c.get('userId')

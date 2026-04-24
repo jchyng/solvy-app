@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Bindings } from '../../types/env.js';
-import type { ProblemSession, Conversation, Message } from './types.js';
+import type { ProblemSession, Conversation, Message, Folder } from './types.js';
 
 export interface CreateSessionData {
   userId: string
@@ -19,6 +19,13 @@ export interface ConversationListOptions {
   favorite?: boolean
 }
 
+export interface UpdateConversationData {
+  title?: string | null
+  is_favorite?: boolean
+  auto_title?: string | null
+  deleted_at?: string | null
+}
+
 export interface CreateMessageData {
   conversationId: string
   role: 'system' | 'assistant' | 'user'
@@ -26,6 +33,18 @@ export interface CreateMessageData {
   structuredPayload?: unknown
   followUpQuestions?: Array<{ id: string; label: string }>
   idempotencyKey?: string
+}
+
+export interface CreateFolderData {
+  userId: string
+  name: string
+  color: string
+}
+
+export interface UpdateFolderData {
+  name?: string
+  color?: string
+  position?: number
 }
 
 export interface DbClient {
@@ -39,12 +58,23 @@ export interface DbClient {
     findBySessionId(sessionId: string): Promise<Conversation | null>
     findById(id: string): Promise<Conversation | null>
     list(userId: string, options?: ConversationListOptions): Promise<Conversation[]>
+    update(id: string, data: UpdateConversationData): Promise<Conversation>
     updateLastMessageAt(id: string): Promise<void>
   }
   messages: {
     create(data: CreateMessageData): Promise<Message>
     listByConversation(conversationId: string): Promise<Message[]>
     findByIdempotencyKey(conversationId: string, key: string): Promise<Message | null>
+  }
+  folders: {
+    create(data: CreateFolderData): Promise<Folder>
+    list(userId: string): Promise<Folder[]>
+    findById(id: string): Promise<Folder | null>
+    update(id: string, data: UpdateFolderData): Promise<Folder>
+    delete(id: string): Promise<void>
+    addConversation(folderId: string, conversationId: string): Promise<void>
+    removeConversation(folderId: string, conversationId: string): Promise<void>
+    listConversations(folderId: string): Promise<Conversation[]>
   }
 }
 
@@ -124,6 +154,21 @@ export function createDbClient(env: Bindings): DbClient {
         if (error) throw new Error(error.message);
         return (data ?? []) as Conversation[];
       },
+      async update(id, data) {
+        const row: Record<string, unknown> = {};
+        if (data.title !== undefined) row['title'] = data.title;
+        if (data.is_favorite !== undefined) row['is_favorite'] = data.is_favorite;
+        if (data.auto_title !== undefined) row['auto_title'] = data.auto_title;
+        if (data.deleted_at !== undefined) row['deleted_at'] = data.deleted_at;
+        const { data: updated, error } = await supabase
+          .from('conversations')
+          .update(row)
+          .eq('id', id)
+          .select()
+          .single();
+        if (error) throw new Error(error.message);
+        return updated as Conversation;
+      },
       async updateLastMessageAt(id) {
         const { error } = await supabase
           .from('conversations')
@@ -167,6 +212,86 @@ export function createDbClient(env: Bindings): DbClient {
           .maybeSingle();
         if (error) throw new Error(error.message);
         return data as Message | null;
+      },
+    },
+    folders: {
+      async create({ userId, name, color }) {
+        const { data: existing } = await supabase
+          .from('note_folders')
+          .select('position')
+          .eq('user_id', userId)
+          .order('position', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        const nextPosition = existing ? (existing as { position: number }).position + 1 : 0;
+
+        const { data, error } = await supabase
+          .from('note_folders')
+          .insert({ user_id: userId, name, color, position: nextPosition })
+          .select()
+          .single();
+        if (error) throw new Error(error.message);
+        return data as Folder;
+      },
+      async list(userId) {
+        const { data, error } = await supabase
+          .from('note_folders')
+          .select('*, conversation_folders(count)')
+          .eq('user_id', userId)
+          .order('position', { ascending: true });
+        if (error) throw new Error(error.message);
+        return (data ?? []) as unknown as Folder[];
+      },
+      async findById(id) {
+        const { data, error } = await supabase
+          .from('note_folders')
+          .select()
+          .eq('id', id)
+          .maybeSingle();
+        if (error) throw new Error(error.message);
+        return data as Folder | null;
+      },
+      async update(id, data) {
+        const row: Record<string, unknown> = {};
+        if (data.name !== undefined) row['name'] = data.name;
+        if (data.color !== undefined) row['color'] = data.color;
+        if (data.position !== undefined) row['position'] = data.position;
+        const { data: updated, error } = await supabase
+          .from('note_folders')
+          .update(row)
+          .eq('id', id)
+          .select()
+          .single();
+        if (error) throw new Error(error.message);
+        return updated as Folder;
+      },
+      async delete(id) {
+        const { error } = await supabase.from('note_folders').delete().eq('id', id);
+        if (error) throw new Error(error.message);
+      },
+      async addConversation(folderId, conversationId) {
+        const { error } = await supabase
+          .from('conversation_folders')
+          .upsert({ folder_id: folderId, conversation_id: conversationId });
+        if (error) throw new Error(error.message);
+      },
+      async removeConversation(folderId, conversationId) {
+        const { error } = await supabase
+          .from('conversation_folders')
+          .delete()
+          .eq('folder_id', folderId)
+          .eq('conversation_id', conversationId);
+        if (error) throw new Error(error.message);
+      },
+      async listConversations(folderId) {
+        const { data, error } = await supabase
+          .from('conversation_folders')
+          .select('conversations(*)')
+          .eq('folder_id', folderId);
+        if (error) throw new Error(error.message);
+        return ((data ?? []) as Array<{ conversations: Conversation }>)
+          .map((r) => r.conversations)
+          .filter(Boolean);
       },
     },
   };

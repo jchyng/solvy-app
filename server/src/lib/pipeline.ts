@@ -30,8 +30,7 @@ async function runFromClassify(
     analysis = await ai.analyze({ recognizedText, userId, sessionId });
   }
 
-  const autoTitle = recognizedText.slice(0, 40);
-  const conversation = await db.conversations.create({ userId, sessionId, autoTitle });
+  const conversation = await db.conversations.create({ userId, sessionId });
 
   await db.messages.create({
     conversationId: conversation.id,
@@ -46,6 +45,11 @@ async function runFromClassify(
     status: 'done',
     completed_at: new Date().toISOString(),
   });
+
+  // 자동 제목 생성 — fire and forget, 실패해도 파이프라인 영향 없음
+  void Promise.resolve(ai.nameNote({ analysisResult: analysis, userId, sessionId }))
+    .then((autoTitle) => db.conversations.update(conversation.id, { auto_title: autoTitle }))
+    .catch(() => undefined);
 }
 
 export async function runAnalysisPipeline(

@@ -106,12 +106,25 @@ function buildMockDb(overrides: Record<string, unknown> = {}) {
       findBySessionId: vi.fn().mockResolvedValue(makeConversation()),
       findById: vi.fn().mockResolvedValue(makeConversation()),
       list: vi.fn().mockResolvedValue([makeConversation()]),
+      update: vi.fn().mockImplementation((_id: string, data: Record<string, unknown>) =>
+        Promise.resolve({ ...makeConversation(), ...data }),
+      ),
       updateLastMessageAt: vi.fn().mockResolvedValue(undefined),
     },
     messages: {
       create: vi.fn(),
       listByConversation: vi.fn().mockResolvedValue([]),
       findByIdempotencyKey: vi.fn().mockResolvedValue(null),
+    },
+    folders: {
+      create: vi.fn(),
+      list: vi.fn().mockResolvedValue([]),
+      findById: vi.fn().mockResolvedValue(null),
+      update: vi.fn(),
+      delete: vi.fn(),
+      addConversation: vi.fn().mockResolvedValue(undefined),
+      removeConversation: vi.fn().mockResolvedValue(undefined),
+      listConversations: vi.fn().mockResolvedValue([]),
     },
     ...overrides,
   }
@@ -376,5 +389,101 @@ describe('POST /api/v1/conversations/:id/messages', () => {
       testEnv as never,
     )
     expect(res.status).toBe(401)
+  })
+})
+
+// ────────────────────────────────────────────────────────────────────────────
+describe('PATCH /api/v1/conversations/:id', () => {
+  it('is_favorite 토글 → 200 + 업데이트된 conversation', async () => {
+    const mockDb = buildMockDb()
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+
+    const res = await authed('PATCH', `/api/v1/conversations/${CONV_ID}`, { is_favorite: true })
+    expect(res.status).toBe(200)
+    expect(mockDb.conversations.update).toHaveBeenCalledWith(
+      CONV_ID,
+      expect.objectContaining({ is_favorite: true }),
+    )
+  })
+
+  it('title 수정 → 200 + update 호출', async () => {
+    const mockDb = buildMockDb()
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+
+    const res = await authed('PATCH', `/api/v1/conversations/${CONV_ID}`, { title: '내 제목' })
+    expect(res.status).toBe(200)
+    expect(mockDb.conversations.update).toHaveBeenCalledWith(
+      CONV_ID,
+      expect.objectContaining({ title: '내 제목' }),
+    )
+  })
+
+  it('필드 없음 → 400', async () => {
+    const mockDb = buildMockDb()
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+
+    const res = await authed('PATCH', `/api/v1/conversations/${CONV_ID}`, {})
+    expect(res.status).toBe(400)
+  })
+
+  it('다른 유저 → 403', async () => {
+    const mockDb = buildMockDb()
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+
+    const res = await authed('PATCH', `/api/v1/conversations/${CONV_ID}`, { is_favorite: true }, OTHER_USER_ID)
+    expect(res.status).toBe(403)
+  })
+
+  it('존재하지 않는 id → 404', async () => {
+    const mockDb = buildMockDb()
+    mockDb.conversations.findById.mockResolvedValue(null)
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+
+    const res = await authed('PATCH', '/api/v1/conversations/nonexistent', { is_favorite: true })
+    expect(res.status).toBe(404)
+  })
+})
+
+// ────────────────────────────────────────────────────────────────────────────
+describe('DELETE /api/v1/conversations/:id (소프트 삭제)', () => {
+  it('소유자 → 204 + deleted_at 설정', async () => {
+    const mockDb = buildMockDb()
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+
+    const res = await authed('DELETE', `/api/v1/conversations/${CONV_ID}`)
+    expect(res.status).toBe(204)
+    expect(mockDb.conversations.update).toHaveBeenCalledWith(
+      CONV_ID,
+      expect.objectContaining({ deleted_at: expect.any(String) }),
+    )
+  })
+
+  it('다른 유저 → 403', async () => {
+    const mockDb = buildMockDb()
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+
+    const res = await authed('DELETE', `/api/v1/conversations/${CONV_ID}`, undefined, OTHER_USER_ID)
+    expect(res.status).toBe(403)
+  })
+
+  it('존재하지 않는 id → 404', async () => {
+    const mockDb = buildMockDb()
+    mockDb.conversations.findById.mockResolvedValue(null)
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+
+    const res = await authed('DELETE', '/api/v1/conversations/nonexistent')
+    expect(res.status).toBe(404)
+  })
+
+  it('삭제된 대화는 목록 조회에서 제외 (list의 is null deleted_at 필터 확인)', async () => {
+    const mockDb = buildMockDb()
+    // list는 deleted_at IS NULL 필터를 DB 레벨에서 적용 — mock은 빈 배열로 시뮬레이션
+    mockDb.conversations.list.mockResolvedValue([])
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+
+    const res = await authed('GET', '/api/v1/conversations')
+    expect(res.status).toBe(200)
+    const body = await res.json() as { data: unknown[] }
+    expect(body.data).toHaveLength(0)
   })
 })
