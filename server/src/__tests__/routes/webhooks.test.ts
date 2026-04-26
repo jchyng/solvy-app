@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import app from '../../index.js'
+import { app } from '../../index.js'
 
 vi.mock('../../lib/db/client.js')
 vi.mock('../../lib/ai/index.js')

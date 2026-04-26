@@ -16,4 +16,6 @@ export interface Bindings {
   IMAGES_PUBLIC_URL: string
   // 결제 (Week 6 stub — Week 8에서 실제 키 등록)
   TOSS_PAYMENTS_SECRET_KEY?: string
+  // 모니터링 알림
+  SLACK_WEBHOOK_URL?: string
 }

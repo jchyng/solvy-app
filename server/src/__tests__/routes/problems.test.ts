@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { sign } from 'hono/jwt'
-import app from '../../index.js'
+import { app } from '../../index.js'
 import type { ProblemSession, Conversation } from '../../lib/db/types.js'
 import type { AnalysisResult } from '../../lib/db/types.js'
 

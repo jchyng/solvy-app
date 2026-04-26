@@ -9,6 +9,8 @@ import { conversations } from './routes/conversations.js'
 import { folders } from './routes/folders.js'
 import { users } from './routes/users.js'
 import { webhooks } from './routes/webhooks.js'
+import { createDbClient } from './lib/db/client.js'
+import { checkDailyCostAndAlert } from './lib/costAlert.js'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -39,4 +41,11 @@ app.route('/api/v1', v1)
 
 app.onError(errorHandler)
 
-export default app
+export { app }
+
+export default {
+  fetch: app.fetch.bind(app),
+  async scheduled(_event: ScheduledEvent, env: Bindings, ctx: ExecutionContext) {
+    ctx.waitUntil(checkDailyCostAndAlert(env, createDbClient(env)))
+  },
+}

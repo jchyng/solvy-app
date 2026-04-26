@@ -50,6 +50,9 @@ export interface UpdateFolderData {
 }
 
 export interface DbClient {
+  usageEvents: {
+    sumCostToday(date: string): Promise<number>
+  }
   sessions: {
     create(data: CreateSessionData): Promise<ProblemSession>
     update(id: string, data: Partial<ProblemSession>): Promise<void>
@@ -84,6 +87,20 @@ export function createDbClient(env: Bindings): DbClient {
   const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_KEY);
 
   return {
+    usageEvents: {
+      async sumCostToday(date) {
+        const start = `${date}T00:00:00.000Z`
+        const end = `${date}T23:59:59.999Z`
+        const { data, error } = await supabase
+          .from('usage_events')
+          .select('cost_usd')
+          .gte('created_at', start)
+          .lte('created_at', end)
+          .eq('success', true)
+        if (error) throw new Error(error.message)
+        return (data ?? []).reduce((sum, row) => sum + (Number(row.cost_usd) || 0), 0)
+      },
+    },
     sessions: {
       async create({ userId, imageUrl, initialStatus = 'uploading', initialRecognizedProblem = null }) {
         const { data, error } = await supabase
