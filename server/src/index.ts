@@ -26,7 +26,7 @@ app.get('/health', (c) =>
   c.json({ status: 'ok', timestamp: new Date().toISOString(), version: '1.0.0' }),
 )
 
-const v1 = new Hono<{ Bindings: Bindings; Variables: { userId: string } }>()
+const v1 = new Hono<{ Bindings: Bindings; Variables: { userId: string; userTier: string } }>()
 v1.use('*', authMiddleware)
 v1.use('*', rateLimitMiddleware)
 v1.route('/problems', problems)

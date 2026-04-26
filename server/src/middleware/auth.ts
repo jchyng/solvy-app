@@ -3,7 +3,7 @@ import { verify } from 'hono/jwt'
 import type { Bindings } from '../types/env.js'
 import { Errors } from '../lib/errors.js'
 
-type Variables = { userId: string }
+type Variables = { userId: string; userTier: string }
 
 export const authMiddleware = createMiddleware<{ Bindings: Bindings; Variables: Variables }>(
   async (c, next) => {
@@ -17,6 +17,7 @@ export const authMiddleware = createMiddleware<{ Bindings: Bindings; Variables: 
 
     if (typeof payload.sub !== 'string') throw Errors.unauthorized()
     c.set('userId', payload.sub)
+    c.set('userTier', typeof payload.tier === 'string' ? payload.tier : 'free')
     await next()
   },
 )
