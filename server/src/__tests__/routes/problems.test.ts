@@ -148,6 +148,40 @@ describe('POST /api/v1/problems', () => {
     expect(res.status).toBe(400)
   })
 
+  it('허용되지 않는 MIME(image/gif) → 400', async () => {
+    setupMocks()
+    const form = new FormData()
+    form.append('image', new File(['data'], 'test.gif', { type: 'image/gif' }))
+    const res = await authed('POST', '/api/v1/problems', form)
+    expect(res.status).toBe(400)
+  })
+
+  it('10MB 초과 → 400', async () => {
+    setupMocks()
+    const form = new FormData()
+    const bigBuffer = new Uint8Array(10 * 1024 * 1024 + 1)
+    form.append('image', new File([bigBuffer], 'big.jpg', { type: 'image/jpeg' }))
+    const res = await authed('POST', '/api/v1/problems', form)
+    expect(res.status).toBe(400)
+  })
+
+  it('정확히 10MB(경계값) → 202', async () => {
+    setupMocks()
+    const form = new FormData()
+    const boundaryBuffer = new Uint8Array(10 * 1024 * 1024)
+    form.append('image', new File([boundaryBuffer], 'boundary.jpg', { type: 'image/jpeg' }))
+    const res = await authed('POST', '/api/v1/problems', form)
+    expect(res.status).toBe(202)
+  })
+
+  it('image/webp → 202', async () => {
+    setupMocks()
+    const form = new FormData()
+    form.append('image', new File(['data'], 'test.webp', { type: 'image/webp' }))
+    const res = await authed('POST', '/api/v1/problems', form)
+    expect(res.status).toBe(202)
+  })
+
   it('인증 없음 → 401', async () => {
     setupMocks()
     const form = new FormData()

@@ -17,6 +17,11 @@ problems.post('/', async (c) => {
   const file = formData['image']
   if (!(file instanceof File)) throw Errors.badRequest('image 필드가 없거나 파일이 아닙니다')
 
+  const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/webp'])
+  const MAX_SIZE = 10 * 1024 * 1024
+  if (!ALLOWED_MIME.has(file.type)) throw Errors.badRequest('지원하지 않는 이미지 형식입니다 (jpeg, png, webp만 허용)')
+  if (file.size > MAX_SIZE) throw Errors.badRequest('이미지 크기는 10MB를 초과할 수 없습니다')
+
   const r2 = createR2Uploader(c.env.IMAGES_BUCKET, c.env.IMAGES_PUBLIC_URL)
   const ext = file.name.split('.').pop() ?? 'jpg'
   const key = `${userId}/${crypto.randomUUID()}.${ext}`
