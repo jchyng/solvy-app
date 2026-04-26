@@ -9,6 +9,9 @@ vi.mock('react-router-dom', () => ({
   useNavigate: vi.fn().mockReturnValue(vi.fn()),
 }))
 
+const { mockPosthogCapture } = vi.hoisted(() => ({ mockPosthogCapture: vi.fn() }))
+vi.mock('posthog-js', () => ({ default: { capture: mockPosthogCapture } }))
+
 // userStore mock
 vi.mock('@/stores/userStore', () => ({
   useUserStore: vi.fn((selector: (s: { token: string | null }) => unknown) =>
@@ -249,5 +252,35 @@ describe('ChatPage', () => {
     await act(async () => { await Promise.resolve() })
 
     expect(container.textContent).not.toContain('시스템 메시지')
+  })
+
+  it('assistant 메시지가 있을 때 피드백 바 표시', async () => {
+    const conv = makeConvResponse([
+      { id: 'm1', conversation_id: CONV_ID, role: 'assistant', content: '풀이입니다.', structured_payload: null, follow_up_questions: [], created_at: new Date().toISOString() },
+    ])
+    vi.stubGlobal('fetch', mockGetConv(conv))
+
+    await act(async () => { root.render(<ChatPage />) })
+    await act(async () => { await Promise.resolve() })
+
+    expect(container.querySelector('[data-testid="feedback-bar"]')).not.toBeNull()
+    expect(container.textContent).toContain('이 풀이가 도움됐나요?')
+  })
+
+  it('피드백 버튼 클릭 시 감사 메시지 표시 + PostHog 이벤트 발행', async () => {
+    const conv = makeConvResponse([
+      { id: 'm1', conversation_id: CONV_ID, role: 'assistant', content: '풀이입니다.', structured_payload: null, follow_up_questions: [], created_at: new Date().toISOString() },
+    ])
+    vi.stubGlobal('fetch', mockGetConv(conv))
+
+    await act(async () => { root.render(<ChatPage />) })
+    await act(async () => { await Promise.resolve() })
+
+    const btn = container.querySelector('[data-testid="feedback-helpful"]') as HTMLButtonElement
+    await act(async () => { btn.click() })
+
+    expect(container.querySelector('[data-testid="feedback-thanks"]')).not.toBeNull()
+    expect(container.querySelector('[data-testid="feedback-bar"]')).toBeNull()
+    expect(mockPosthogCapture).toHaveBeenCalledWith('analysis_helpful', expect.objectContaining({ helpful: true }))
   })
 })

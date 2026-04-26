@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import posthog from 'posthog-js'
 import { AnalysisCard } from '@/features/problem/AnalysisCard'
 import { AddToFolderSheet, RenameModal } from '@/features/notes'
 import { SimilarProblemCard } from '@/features/similar'
@@ -70,6 +71,8 @@ export default function ChatPage() {
   // 유사 문제 난이도 선택 UI
   const [showDifficultySelector, setShowDifficultySelector] = useState(false)
   const [isGeneratingSimilar, setIsGeneratingSimilar] = useState(false)
+
+  const [feedbackGiven, setFeedbackGiven] = useState(false)
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -256,6 +259,11 @@ export default function ChatPage() {
       setConvFolderIds((prev) => { const s = new Set(prev); s.delete(folderId); return s })
       await api.folders.removeConversation(folderId, id)
     }
+  }
+
+  const handleFeedback = (helpful: boolean) => {
+    try { posthog.capture('analysis_helpful', { helpful, conversationId: id }) } catch { /* posthog 미초기화 환경에서 무시 */ }
+    setFeedbackGiven(true)
   }
 
   const handleDifficultySelect = async (difficulty: 'same' | 'up' | 'down') => {
@@ -462,6 +470,51 @@ export default function ChatPage() {
 
         {messages.filter((m) => m.role !== 'system').length === 0 && !isStreaming && (
           <p style={{ color: 'var(--ink-3)', textAlign: 'center' }}>아직 메시지가 없습니다</p>
+        )}
+
+        {/* 분석 완료 후 피드백 */}
+        {!isStreaming && lastAssistantIdx >= 0 && (
+          feedbackGiven ? (
+            <p
+              data-testid="feedback-thanks"
+              style={{ color: 'var(--ink-3)', fontSize: 'var(--text-small)', textAlign: 'center' }}
+            >
+              피드백 감사합니다!
+            </p>
+          ) : (
+            <div
+              data-testid="feedback-bar"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '12px 16px',
+                background: 'var(--bg-sunken)',
+                borderRadius: '12px',
+              }}
+            >
+              <p style={{ color: 'var(--ink-2)', fontSize: 'var(--text-small)', margin: 0 }}>
+                이 풀이가 도움됐나요?
+              </p>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  onClick={() => handleFeedback(true)}
+                  data-testid="feedback-helpful"
+                  style={chipStyle}
+                >
+                  도움됐어요
+                </button>
+                <button
+                  onClick={() => handleFeedback(false)}
+                  data-testid="feedback-not-helpful"
+                  style={chipStyle}
+                >
+                  아니에요
+                </button>
+              </div>
+            </div>
+          )
         )}
 
         <div ref={bottomRef} />
