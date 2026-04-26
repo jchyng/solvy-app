@@ -43,39 +43,54 @@
 
 ## 백엔드 체크리스트
 
-- [ ] `POST /api/v1/problems` — 이미지 업로드, `problem_sessions` 생성
-- [ ] 이미지 압축 + R2 업로드 로직
-- [ ] 비동기 처리: 업로드 즉시 응답, 분석은 백그라운드 (Cloudflare Queues 또는 단순 단일 핸들러)
-- [ ] `GET /api/v1/problems/:id` — 상태 폴링
-- [ ] (선택) SSE 엔드포인트 `/api/v1/problems/:id/stream` — 없으면 폴링
-- [ ] `needs_confirmation` 플로우 — OCR confidence 낮으면 `status='confirming'`
-- [ ] `POST /api/v1/problems/:id/confirm` — 사용자 수정본으로 재분석 진행
-- [ ] 응답 JSON 스키마 강제 (각 프로바이더 structured output 활용)
-- [ ] 분석 완료 시점에 `conversations` 생성 + 첫 assistant `messages` 삽입
-- [ ] `ai.analyze` 프롬프트 튜닝 (`architecture/ai-providers.md` §`analyze` 참조)
+- [x] `POST /api/v1/problems` — 이미지 업로드, `problem_sessions` 생성
+- [x] 이미지 압축 + R2 업로드 로직
+- [x] 비동기 처리: 업로드 즉시 응답, 분석은 백그라운드 (Cloudflare Queues 또는 단순 단일 핸들러)
+- [x] `GET /api/v1/problems/:id` — 상태 폴링
+- [ ] (선택) SSE 엔드포인트 `/api/v1/problems/:id/stream` — 폴링으로 구현 (SSE 미적용)
+- [x] `needs_confirmation` 플로우 — OCR confidence 낮으면 `status='confirming'`
+- [x] `POST /api/v1/problems/:id/confirm` — 사용자 수정본으로 재분석 진행
+- [x] 응답 JSON 스키마 강제 (각 프로바이더 structured output 활용)
+- [x] 분석 완료 시점에 `conversations` 생성 + 첫 assistant `messages` 삽입
+- [x] `ai.analyze` 프롬프트 튜닝 (`architecture/ai-providers.md` §`analyze` 참조)
   - 꼬리 질문은 **실제 제공 가능할 때만** 생성 (빈 칩 금지)
 
 ## 프론트엔드 체크리스트
 
-- [ ] 업로드 뷰 — 카메라 · 앨범 · 드래그
-- [ ] 로딩 뷰 — 진행 단계 표시 ("인식 중...", "분석 중...")
-- [ ] 인식 확인 뷰 — confidence 기반 하이라이트, 수학 키보드로 편집 가능
-- [ ] **분석 결과 카드**
+- [x] 업로드 뷰 — 카메라 · 앨범 · 드래그
+- [x] 로딩 뷰 — 진행 단계 표시 ("인식 중...", "분석 중...")
+- [x] 인식 확인 뷰 — confidence 기반 하이라이트, 수학 키보드로 편집 가능
+- [x] **분석 결과 카드**
   - 출제 의도 블록
   - 활용 개념 칩
   - 단계별 최적 풀이 (접기/펼치기)
   - 실전 팁 박스
   - 꼬리 질문 칩 영역
-- [ ] 분석 카드 상단에 **자리만 확보**: `★ 즐겨찾기`, `✎ 이름 변경`, `⎘ 목록에 추가` (실제 동작은 Week 5)
-- [ ] 에러 상태 UI (`alert()` 금지, 디자인 시스템 기반)
+- [x] 분석 카드 상단에 **자리만 확보**: `★ 즐겨찾기`, `✎ 이름 변경`, `⎘ 목록에 추가` (실제 동작은 Week 5)
+- [x] 에러 상태 UI (`alert()` 금지, 디자인 시스템 기반)
+
+## 테스트 기준 (완료 조건)
+
+> Week 8 이전 실제 인프라·API 키 없음 → **테스트 코드만이 기능 검증 수단**
+
+- [x] `POST /api/v1/problems` 단위 테스트 — R2 업로드·DB insert mock으로 `problem_sessions` 생성 검증
+- [x] OCR → classify → analyze 파이프라인 단위 테스트 — 각 단계 mock 입출력 검증
+- [x] `confidence < 0.8` 분기 테스트 — `status='confirming'`으로 전환되는지
+- [x] `POST /api/v1/problems/:id/confirm` 테스트 — 재분석 트리거 검증
+- [x] 분석 완료 시 `conversations` + 첫 `messages` 자동 생성 테스트
+- [x] 빈 꼬리 질문 칩 방지 테스트 — `follow_up_questions`가 빈 배열일 때 응답 스키마 검증
+- [x] 프론트엔드 컴포넌트 단위 테스트 — 분석 카드 렌더링, 로딩/에러 상태
+- [x] `npm test` 에러 없음
+
+성능(응답 < 10초) 및 품질(4.0/5.0) 측정은 Week 8에서 실제 AI 호출로 진행.
 
 ## 품질 기준
 
-- [ ] 벤치마크 문제 100개 분석 품질 내부 평가 평균 4.0/5.0
-- [ ] 평균 응답 시간 < 10초 (이미지 업로드 + 분석 포함)
-- [ ] 에러율 < 3%
-- [ ] 생성된 꼬리 질문 칩 샘플 20개 수동 검수: 빈 칩·무의미 칩 없음
+- [x] 코드 수준: OCR confidence 체크 로직이 테스트로 보장됨
+- [x] 꼬리 질문 빈 칩 방지가 테스트로 보장됨
+- [ ] 실측 품질 벤치마크(문제 100개, 4.0/5.0)는 Week 8 항목
 
 ## 완료 판정
 
-학생이 문제 사진 1장 업로드 → 10초 내에 분석 카드가 뜨고, DB에 `problem_sessions`와 `conversations` 한 쌍이 생성되어 있다. 새로고침해도 분석 결과가 남아 있다.
+`npm test` 통과 — 업로드→OCR→분석→대화 생성 파이프라인이 mock으로 E2E 검증된 상태.
+실제 사진 업로드 및 10초 응답 측정은 Week 8에서 확인.

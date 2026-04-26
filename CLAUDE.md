@@ -14,31 +14,32 @@
 | 기술 스택·환경변수 | `docs/architecture/tech-stack.md` |
 | AI 프로바이더·역할 | `docs/architecture/ai-providers.md` |
 | DB 스키마 | `docs/architecture/data-model.md` |
-| 현재 스프린트 작업 | `docs/sprints/week-6-similar-and-payment.md` |
+| 현재 스프린트 작업 | `docs/sprints/week-7-hardening.md` |
 | 색상·타이포·컴포넌트 | `design-system/INDEX.md` |
 | 전체 문서 인덱스 | `docs/README.md` |
 
 ---
 
-## 현재 스프린트: Week 6 — Polish 2: 유사 문제 생성 + 결제 준비
+## 현재 스프린트: Week 7 — Hardening: 테스트 · 보안 · 모니터링
 
-**목표**: 유사 문제 생성이 대화 안에서 자연스럽게 이어진다, 결제 스택이 세팅되어 즉시 활성화 가능하다
+**목표**: 베타 런칭 전 안정화. 보안·테스트·모니터링이 프로덕션 수준.
 
 **이번 주 해야 할 것**
-- generateSimilar role (OpenRouter DeepSeek V3) ✅
-- POST /conversations/:id/similar-problem (3단계 난이도) ✅
-- POST /problems/from-text ("이 문제도 새 대화로") ✅
-- Toss Payments webhook stub ✅
-- PricingPage (Free/Light/Pro) + FoundingMemberPage ✅
-- SimilarProblemCard (문제·답·풀이 토글) ✅
-- ChatPage 난이도 선택 칩 + similar_problem 렌더링 ✅
+- 사용자 간 데이터 격리 테스트 (A의 JWT로 B 리소스 접근 시 403)
+- Rate limit 로직 단위 테스트 (역할별 임계값, KV mock)
+- 이미지 업로드 용량·포맷 제한 단위 테스트
+- gitleaks CI 통합 (`.github/workflows/ci.yml`)
+- Sentry 알림 임계치 설정
+- 비용 알림 (일일 $100 초과 시 Slack)
+- 앱 내 피드백 버튼 ("이 풀이가 도움됐나요?")
+- subscriptions 테이블 SQL 마이그레이션 추가 (Week 6 미완료 이월)
 
 **이번 주 금지**
-- 결제 로직 활성화 (베타 후)
-- 새 제품 기능 (Week 7은 Hardening)
-- 과목 확장 (Phase 2)
+- 신규 기능 추가
+- UI 디자인 대규모 변경
+- 프롬프트 대규모 재작성
 
-작업 전 `docs/sprints/week-6-similar-and-payment.md` 체크리스트를 확인하세요.
+작업 전 `docs/sprints/week-7-hardening.md` 체크리스트를 확인하세요.
 
 ---
 
