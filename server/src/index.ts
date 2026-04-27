@@ -11,6 +11,7 @@ import { users } from './routes/users.js'
 import { webhooks } from './routes/webhooks.js'
 import { createDbClient } from './lib/db/client.js'
 import { checkDailyCostAndAlert } from './lib/costAlert.js'
+import { checkErrorRateAndAlert, checkAbuserAndAlert } from './lib/alerts.js'
 import { withSentryWorker } from './lib/sentry.js'
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -47,6 +48,11 @@ export { app }
 export default withSentryWorker({
   fetch: app.fetch.bind(app),
   async scheduled(_event: ScheduledEvent, env: Bindings, ctx: ExecutionContext) {
-    ctx.waitUntil(checkDailyCostAndAlert(env, createDbClient(env)))
+    const db = createDbClient(env)
+    ctx.waitUntil(Promise.all([
+      checkDailyCostAndAlert(env, db),
+      checkErrorRateAndAlert(env, db),
+      checkAbuserAndAlert(env, db),
+    ]))
   },
 })

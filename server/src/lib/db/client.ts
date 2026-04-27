@@ -52,6 +52,8 @@ export interface UpdateFolderData {
 export interface DbClient {
   usageEvents: {
     sumCostToday(date: string): Promise<number>
+    errorRateLast10Min(): Promise<{ total: number; errors: number }>
+    topUsersByCallsToday(date: string): Promise<Array<{ userId: string; count: number }>>
   }
   sessions: {
     create(data: CreateSessionData): Promise<ProblemSession>
@@ -99,6 +101,37 @@ export function createDbClient(env: Bindings): DbClient {
           .eq('success', true)
         if (error) throw new Error(error.message)
         return (data ?? []).reduce((sum, row) => sum + (Number(row.cost_usd) || 0), 0)
+      },
+      async errorRateLast10Min() {
+        const since = new Date(Date.now() - 10 * 60 * 1000).toISOString()
+        const { data, error } = await supabase
+          .from('usage_events')
+          .select('success')
+          .gte('created_at', since)
+        if (error) throw new Error(error.message)
+        const rows = data ?? []
+        return {
+          total: rows.length,
+          errors: rows.filter((r) => !r.success).length,
+        }
+      },
+      async topUsersByCallsToday(date) {
+        const start = `${date}T00:00:00.000Z`
+        const end = `${date}T23:59:59.999Z`
+        const { data, error } = await supabase
+          .from('usage_events')
+          .select('user_id')
+          .gte('created_at', start)
+          .lte('created_at', end)
+        if (error) throw new Error(error.message)
+        const counts = new Map<string, number>()
+        for (const row of (data ?? [])) {
+          const uid = row.user_id as string
+          counts.set(uid, (counts.get(uid) ?? 0) + 1)
+        }
+        return Array.from(counts.entries())
+          .map(([userId, count]) => ({ userId, count }))
+          .sort((a, b) => b.count - a.count)
       },
     },
     sessions: {
