@@ -34,6 +34,8 @@ docs/
 │   ├── data-model.md              PostgreSQL 스키마 · 이벤트 규약
 │   └── prototype-migration.md     기존 코드 유지/폐기 가이드
 ├── design-system/                 디자인 시스템 (INDEX.md → AI 빠른 참조)
+├── week-8-raspi-dev.md            Week 8 Phase 1 — 라즈베리파이 개발 서버 검증
+├── week-8-infra-checklist.md      Week 8 Phase 2 — 클라우드 배포 (Phase 1 통과 후)
 └── sprints/                       (주차별 작업 지시)
     ├── week-0-setup.md
     ├── week-1-backend-skeleton.md
@@ -62,7 +64,8 @@ docs/
 | Week 5 | `sprints/week-5-notes.md` | `context/00-vision.md` §3.3 · `architecture/data-model.md` §note_folders · conversation_folders · `design-system/INDEX.md` |
 | Week 6 | `sprints/week-6-similar-and-payment.md` | `architecture/ai-providers.md` §`generateSimilar` · `context/02-business-model.md` §구독 플랜 |
 | Week 7 | `sprints/week-7-hardening.md` | `context/03-risks.md` · `architecture/data-model.md` (권한 체크) |
-| Week 8 | `sprints/week-8-launch.md` | `context/02-business-model.md` §베타 혜택 약속 · `context/01-principles.md` |
+| Week 8 Phase 1 | `sprints/week-8-launch.md` + `week-8-raspi-dev.md` | `context/02-business-model.md` §베타 혜택 약속 · `context/01-principles.md` |
+| Week 8 Phase 2 | `week-8-infra-checklist.md` | Phase 1 검증 완료 후 진행 |
 
 ---
 

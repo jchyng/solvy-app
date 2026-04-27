@@ -29,7 +29,9 @@
 - ✅ 랜딩 페이지 (`/`) + 이용약관(`/terms`) + FAQ(`/faq`)
 - ✅ 앱 라우트 `/app`으로 이동 (비인증 사용자는 랜딩으로)
 
-**직접 처리 필요** → `docs/week-8-infra-checklist.md`
+**배포 2단계 전략**
+- **Phase 1** (현재): 라즈베리파이 개발 서버에서 기능 전체 검증 → `docs/week-8-raspi-dev.md`
+- **Phase 2** (Phase 1 통과 후): 클라우드 전환 → `docs/week-8-infra-checklist.md`
 
 **이번 주 금지**
 - 신규 기능 추가 (Week 7·8 연속 금지)
