@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Sparkles, BookOpen, Brain, ChevronRight, Award, Gift, Lock, CreditCard } from 'lucide-react'
 
 const BASE = import.meta.env.VITE_API_URL ?? '/api/v1'
@@ -141,6 +141,12 @@ export default function LandingPage() {
               )}
               <p style={{ color: 'var(--ink-3)', fontSize: 'var(--text-small)', textAlign: 'center' }}>
                 베타 참여 = Founding Member 혜택 자동 부여
+              </p>
+              <p style={{ color: 'var(--ink-3)', fontSize: 'var(--text-small)', textAlign: 'center', margin: 0 }}>
+                이미 초대 코드가 있으신가요?{' '}
+                <Link to="/signup" style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 600 }}>
+                  지금 가입하기
+                </Link>
               </p>
             </form>
           )}

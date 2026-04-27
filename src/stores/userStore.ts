@@ -5,6 +5,7 @@ interface User {
   email: string
   name: string
   tier: 'free' | 'light' | 'pro'
+  is_beta_tester: boolean
 }
 
 interface UserState {
