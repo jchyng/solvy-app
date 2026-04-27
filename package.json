@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:server": "node -e \"require('fs').copyFileSync('.env','server/.dev.vars')\" && npm run dev --prefix server",
+    "dev:server:wsl": "wsl bash -lc 'cd /mnt/c/dev/github/solvy-app/server && cp /mnt/c/dev/github/solvy-app/.env .dev.vars && npm run dev'",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

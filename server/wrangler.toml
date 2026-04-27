@@ -8,8 +8,14 @@ ENVIRONMENT = "development"
 
 [[kv_namespaces]]
 binding = "RATE_LIMIT_KV"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
-preview_id = "REPLACE_WITH_KV_PREVIEW_ID"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"        # wrangler deploy 전에 실제 ID로 교체
+preview_id = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"  # wrangler dev 로컬 KV 시뮬레이션용
+
+# Phase 1 (dev): wrangler dev가 .wrangler/state/v3/r2/ 에 로컬로 시뮬레이션
+# Phase 2 (prod): wrangler deploy 전 Cloudflare R2 버킷 생성 필요
+[[r2_buckets]]
+binding = "IMAGES_BUCKET"
+bucket_name = "solvy-uploads"
 
 [triggers]
 crons = ["0 0 * * *"]  # 매일 UTC 00:00 — 일일 비용 알림 체크
