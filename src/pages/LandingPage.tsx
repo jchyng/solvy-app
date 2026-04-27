@@ -23,8 +23,12 @@ export default function LandingPage() {
         body: JSON.stringify({ email: email.trim() }),
       })
       if (!res.ok) {
-        const data = await res.json() as { error?: string }
-        throw new Error(data.error ?? '등록에 실패했습니다')
+        let msg = '등록에 실패했습니다'
+        try {
+          const data = await res.json() as { error?: string }
+          msg = data.error ?? msg
+        } catch { /* non-JSON body (서버 다운 또는 프록시 오류) */ }
+        throw new Error(msg)
       }
       const data = await res.json() as { position: number }
       setPosition(data.position)
@@ -53,6 +57,21 @@ export default function LandingPage() {
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
           <button onClick={() => navigate('/faq')} style={ghostLink}>FAQ</button>
           <button onClick={() => navigate('/terms')} style={ghostLink}>이용약관</button>
+          <button
+            onClick={() => navigate('/login')}
+            style={{
+              background: 'var(--accent)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '9999px',
+              padding: '8px 18px',
+              fontSize: 'var(--text-small)',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            로그인
+          </button>
         </div>
       </nav>
 
