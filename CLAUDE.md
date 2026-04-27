@@ -14,32 +14,29 @@
 | 기술 스택·환경변수 | `docs/architecture/tech-stack.md` |
 | AI 프로바이더·역할 | `docs/architecture/ai-providers.md` |
 | DB 스키마 | `docs/architecture/data-model.md` |
-| 현재 스프린트 작업 | `docs/sprints/week-7-hardening.md` |
+| 현재 스프린트 작업 | `docs/sprints/week-8-launch.md` |
 | 색상·타이포·컴포넌트 | `design-system/INDEX.md` |
 | 전체 문서 인덱스 | `docs/README.md` |
 
 ---
 
-## 현재 스프린트: Week 7 — Hardening: 테스트 · 보안 · 모니터링
+## 현재 스프린트: Week 8 — Launch: 인프라 세팅 + 베타 런칭
 
-**목표**: 베타 런칭 전 안정화. 보안·테스트·모니터링이 프로덕션 수준.
+**목표**: 인프라·계정·배포를 세팅하고 실제 사용자에게 제품을 연다.
 
-**이번 주 해야 할 것**
-- 사용자 간 데이터 격리 테스트 (A의 JWT로 B 리소스 접근 시 403)
-- Rate limit 로직 단위 테스트 (역할별 임계값, KV mock)
-- 이미지 업로드 용량·포맷 제한 단위 테스트
-- gitleaks CI 통합 (`.github/workflows/ci.yml`)
-- Sentry 알림 임계치 설정
-- 비용 알림 (일일 $100 초과 시 Slack)
-- 앱 내 피드백 버튼 ("이 풀이가 도움됐나요?")
-- subscriptions 테이블 SQL 마이그레이션 추가 (Week 6 미완료 이월)
+**코드 완료 항목**
+- ✅ 베타 대기열 API (POST /api/v1/waitlist) + DB 마이그레이션
+- ✅ 랜딩 페이지 (`/`) + 이용약관(`/terms`) + FAQ(`/faq`)
+- ✅ 앱 라우트 `/app`으로 이동 (비인증 사용자는 랜딩으로)
+
+**직접 처리 필요** → `docs/week-8-infra-checklist.md`
 
 **이번 주 금지**
-- 신규 기능 추가
-- UI 디자인 대규모 변경
-- 프롬프트 대규모 재작성
+- 신규 기능 추가 (Week 7·8 연속 금지)
+- 제품 축 재검토
+- 결제 활성화 (베타 후)
 
-작업 전 `docs/sprints/week-7-hardening.md` 체크리스트를 확인하세요.
+작업 전 `docs/sprints/week-8-launch.md` 및 `docs/week-8-infra-checklist.md` 확인하세요.
 
 ---
 
