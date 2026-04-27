@@ -1,9 +1,11 @@
 import { useRef, useState } from 'react'
 import { Camera, Image } from 'lucide-react'
 import { useProblemStore } from '@/stores/problemStore'
+import { useUserStore } from '@/stores/userStore'
 
 export function UploadView() {
   const upload = useProblemStore((s) => s.upload)
+  const isBetaTester = useUserStore((s) => s.user?.is_beta_tester ?? false)
   const [dragging, setDragging] = useState(false)
 
   function handleFile(file: File | null | undefined) {
@@ -22,9 +24,26 @@ export function UploadView() {
 
   return (
     <main className="flex flex-col items-center justify-center min-h-dvh p-6 gap-6">
-      <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'var(--text-brand)', color: 'var(--accent)' }}>
-        Solvy
-      </h1>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'var(--text-brand)', color: 'var(--accent)', margin: 0 }}>
+          Solvy
+        </h1>
+        {isBetaTester && (
+          <span
+            data-testid="founding-member-badge"
+            style={{
+              background: 'var(--bg-sunken)',
+              color: 'var(--accent)',
+              fontSize: 'var(--text-small)',
+              fontWeight: 600,
+              borderRadius: '9999px',
+              padding: '2px 10px',
+            }}
+          >
+            ⭐ Founding Member
+          </span>
+        )}
+      </div>
 
       <div
         onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
@@ -101,6 +120,16 @@ export function UploadView() {
         style={{ display: 'none' }}
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
+
+      <footer style={{ marginTop: 'auto', paddingTop: '16px', textAlign: 'center' }}>
+        <a
+          href="mailto:solvy.contact@gmail.com"
+          data-testid="support-link"
+          style={{ color: 'var(--ink-3)', fontSize: 'var(--text-small)', textDecoration: 'none' }}
+        >
+          문의하기
+        </a>
+      </footer>
     </main>
   )
 }
