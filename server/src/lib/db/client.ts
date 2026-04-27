@@ -57,6 +57,7 @@ export interface DbClient {
   users: {
     findByEmail(email: string): Promise<DbUser | null>
     create(data: { email: string; name: string; is_beta_tester: boolean }): Promise<DbUser>
+    updatePasswordHash(id: string, hash: string): Promise<void>
   }
   waitlist: {
     register(email: string): Promise<WaitlistEntry>
@@ -138,6 +139,13 @@ export function createDbClient(env: Bindings): DbClient {
           .single()
         if (error) throw new Error(error.message)
         return data as DbUser
+      },
+      async updatePasswordHash(id, hash) {
+        const { error } = await supabase
+          .from('users')
+          .update({ password_hash: hash })
+          .eq('id', id)
+        if (error) throw new Error(error.message)
       },
     },
     waitlist: {

@@ -83,5 +83,6 @@ export interface DbUser {
   name: string
   tier: string
   is_beta_tester: boolean
+  password_hash: string | null
   created_at: string
 }
