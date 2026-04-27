@@ -94,7 +94,7 @@ describe('SignupPage', () => {
 
   it('API 오류 시 에러 메시지 표시', async () => {
     vi.mocked(api.auth.redeemInvite).mockResolvedValue(
-      new Response(JSON.stringify({ message: '이미 사용된 초대 코드입니다' }), { status: 400 }),
+      new Response(JSON.stringify({ error: '이미 사용된 초대 코드입니다' }), { status: 400 }),
     )
     render()
 
