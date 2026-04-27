@@ -42,10 +42,8 @@ function TypingIndicator() {
   )
 }
 
-const SIMILAR_KEYWORDS = ['비슷한', '유사']
-
-function isSimilarQuestion(label: string): boolean {
-  return SIMILAR_KEYWORDS.some((kw) => label.includes(kw))
+function isSimilarQuestion(q: FollowUpQuestion): boolean {
+  return q.id === 'similar'
 }
 
 export default function ChatPage() {
@@ -212,7 +210,7 @@ export default function ChatPage() {
   }
 
   const handleFollowUp = (q: FollowUpQuestion) => {
-    if (isSimilarQuestion(q.label)) {
+    if (isSimilarQuestion(q)) {
       setShowDifficultySelector(true)
       return
     }

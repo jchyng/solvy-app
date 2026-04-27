@@ -267,6 +267,63 @@ describe('ChatPage', () => {
     expect(container.textContent).toContain('이 풀이가 도움됐나요?')
   })
 
+  it('id="similar" 칩 클릭 시 난이도 선택 UI가 표시됨', async () => {
+    const conv = makeConvResponse([
+      {
+        id: 'm1', conversation_id: CONV_ID, role: 'assistant', content: '풀이입니다.',
+        structured_payload: null,
+        follow_up_questions: [{ id: 'similar', label: '비슷한 유형 만들어줘' }],
+        created_at: new Date().toISOString(),
+      },
+    ])
+    vi.stubGlobal('fetch', mockGetConv(conv))
+
+    await act(async () => { root.render(<ChatPage />) })
+    await act(async () => { await Promise.resolve() })
+
+    const chip = [...container.querySelectorAll('button')].find(
+      (b) => b.textContent?.includes('비슷한 유형 만들어줘'),
+    ) as HTMLButtonElement
+    expect(chip).toBeDefined()
+    await act(async () => { chip.click() })
+
+    expect(container.querySelector('[data-testid="difficulty-selector"]')).not.toBeNull()
+  })
+
+  it('id가 "similar"가 아닌 칩 클릭 시 난이도 선택 UI가 표시되지 않음', async () => {
+    const conv = makeConvResponse([
+      {
+        id: 'm1', conversation_id: CONV_ID, role: 'assistant', content: '풀이입니다.',
+        structured_payload: null,
+        follow_up_questions: [{ id: 'Q1', label: '다른 풀이 방법도 알려줘?' }],
+        created_at: new Date().toISOString(),
+      },
+    ])
+
+    let fetchCallCount = 0
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(() => {
+      fetchCallCount++
+      if (fetchCallCount === 1) {
+        return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(conv), body: null })
+      }
+      // sendMessage 호출 시 body가 있는 스트림 반환
+      return Promise.resolve({
+        ok: true, status: 200, body: new ReadableStream({ start(c) { c.close() } }),
+      })
+    }))
+
+    await act(async () => { root.render(<ChatPage />) })
+    await act(async () => { await Promise.resolve() })
+
+    const chip = [...container.querySelectorAll('button')].find(
+      (b) => b.textContent?.includes('다른 풀이 방법도 알려줘?'),
+    ) as HTMLButtonElement
+    expect(chip).toBeDefined()
+    await act(async () => { chip.click() })
+
+    expect(container.querySelector('[data-testid="difficulty-selector"]')).toBeNull()
+  })
+
   it('피드백 버튼 클릭 시 감사 메시지 표시 + PostHog 이벤트 발행', async () => {
     const conv = makeConvResponse([
       { id: 'm1', conversation_id: CONV_ID, role: 'assistant', content: '풀이입니다.', structured_payload: null, follow_up_questions: [], created_at: new Date().toISOString() },
