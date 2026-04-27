@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { CookieBanner } from '@/shared/components/CookieBanner'
 import HomePage from '@/pages/HomePage'
 import ChatPage from '@/pages/ChatPage'
 import NotesPage from '@/pages/NotesPage'
@@ -15,6 +16,7 @@ import FaqPage from '@/pages/FaqPage'
 export default function App() {
   return (
     <BrowserRouter>
+      <CookieBanner />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
