@@ -3,7 +3,13 @@ import { verify } from 'hono/jwt'
 import { app } from '../../index.js'
 
 vi.mock('../../lib/db/client.js')
+vi.mock('../../lib/password.js', () => ({
+  hashPassword: vi.fn().mockResolvedValue('hashed:password'),
+  verifyPassword: vi.fn().mockResolvedValue(true),
+}))
+
 import { createDbClient } from '../../lib/db/client.js'
+import { verifyPassword } from '../../lib/password.js'
 
 const TEST_SECRET = 'test-jwt-secret'
 
@@ -46,13 +52,14 @@ function makeInvite(overrides: Partial<{
   }
 }
 
-function makeUser(email = 'user@example.com') {
+function makeUser(email = 'user@example.com', passwordHash: string | null = 'hashed:password') {
   return {
     id: 'user-uuid-1',
     email,
     name: 'user',
     tier: 'free',
     is_beta_tester: true,
+    password_hash: passwordHash,
     created_at: now.toISOString(),
   }
 }
@@ -71,6 +78,7 @@ function buildMockDb(opts: {
     users: {
       findByEmail: vi.fn().mockResolvedValue(existingUser),
       create: vi.fn().mockResolvedValue(createdUser),
+      updatePasswordHash: vi.fn().mockResolvedValue(undefined),
     },
     waitlist: { register: vi.fn(), findByEmail: vi.fn(), count: vi.fn() },
     usageEvents: { sumCostToday: vi.fn(), errorRateLast10Min: vi.fn(), topUsersByCallsToday: vi.fn() },
@@ -81,8 +89,16 @@ function buildMockDb(opts: {
   }
 }
 
-function post(body: unknown) {
+function redeemPost(body: unknown) {
   return app.request('/api/v1/auth/redeem-invite', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  }, testEnv as never)
+}
+
+function loginPost(body: unknown) {
+  return app.request('/api/v1/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -95,7 +111,7 @@ describe('POST /api/v1/auth/redeem-invite', () => {
   it('정상 가입 → 201 + token + user', async () => {
     vi.mocked(createDbClient).mockReturnValue(buildMockDb({}) as never)
 
-    const res = await post({ code: 'BETA-CODE', email: 'user@example.com' })
+    const res = await redeemPost({ code: 'BETA-CODE', email: 'user@example.com', password: 'TestPass1!' })
     expect(res.status).toBe(201)
     const body = await res.json() as { token: string; user: { id: string; is_beta_tester: boolean } }
     expect(typeof body.token).toBe('string')
@@ -106,28 +122,41 @@ describe('POST /api/v1/auth/redeem-invite', () => {
   it('JWT 검증 가능 (HS256)', async () => {
     vi.mocked(createDbClient).mockReturnValue(buildMockDb({}) as never)
 
-    const res = await post({ code: 'BETA-CODE', email: 'user@example.com' })
+    const res = await redeemPost({ code: 'BETA-CODE', email: 'user@example.com', password: 'TestPass1!' })
     const { token } = await res.json() as { token: string }
     const payload = await verify(token, TEST_SECRET, 'HS256')
     expect(payload.sub).toBe('user-uuid-1')
     expect(payload.tier).toBe('free')
   })
 
+  it('비밀번호 해싱 후 저장', async () => {
+    const mockDb = buildMockDb({})
+    vi.mocked(createDbClient).mockReturnValue(mockDb as never)
+    await redeemPost({ code: 'BETA-CODE', email: 'user@example.com', password: 'TestPass1!' })
+    expect(mockDb.users.updatePasswordHash).toHaveBeenCalledWith('user-uuid-1', 'hashed:password')
+  })
+
   it('코드 없음 → 400', async () => {
     vi.mocked(createDbClient).mockReturnValue(buildMockDb({}) as never)
-    const res = await post({ email: 'user@example.com' })
+    const res = await redeemPost({ email: 'user@example.com', password: 'TestPass1!' })
+    expect(res.status).toBe(400)
+  })
+
+  it('비밀번호 없음 → 400', async () => {
+    vi.mocked(createDbClient).mockReturnValue(buildMockDb({}) as never)
+    const res = await redeemPost({ code: 'BETA-CODE', email: 'user@example.com' })
     expect(res.status).toBe(400)
   })
 
   it('이메일 형식 오류 → 400', async () => {
     vi.mocked(createDbClient).mockReturnValue(buildMockDb({}) as never)
-    const res = await post({ code: 'BETA-CODE', email: 'not-email' })
+    const res = await redeemPost({ code: 'BETA-CODE', email: 'not-email', password: 'TestPass1!' })
     expect(res.status).toBe(400)
   })
 
   it('없는 코드 → 404', async () => {
     vi.mocked(createDbClient).mockReturnValue(buildMockDb({ invite: null }) as never)
-    const res = await post({ code: 'WRONG', email: 'user@example.com' })
+    const res = await redeemPost({ code: 'WRONG', email: 'user@example.com', password: 'TestPass1!' })
     expect(res.status).toBe(404)
   })
 
@@ -135,7 +164,7 @@ describe('POST /api/v1/auth/redeem-invite', () => {
     vi.mocked(createDbClient).mockReturnValue(
       buildMockDb({ invite: makeInvite({ expires_at: past }) }) as never,
     )
-    const res = await post({ code: 'BETA-CODE', email: 'user@example.com' })
+    const res = await redeemPost({ code: 'BETA-CODE', email: 'user@example.com', password: 'TestPass1!' })
     expect(res.status).toBe(400)
   })
 
@@ -143,13 +172,13 @@ describe('POST /api/v1/auth/redeem-invite', () => {
     vi.mocked(createDbClient).mockReturnValue(
       buildMockDb({ invite: makeInvite({ used_at: past }) }) as never,
     )
-    const res = await post({ code: 'BETA-CODE', email: 'user@example.com' })
+    const res = await redeemPost({ code: 'BETA-CODE', email: 'user@example.com', password: 'TestPass1!' })
     expect(res.status).toBe(400)
   })
 
   it('이메일 불일치 → 400', async () => {
     vi.mocked(createDbClient).mockReturnValue(buildMockDb({}) as never)
-    const res = await post({ code: 'BETA-CODE', email: 'other@example.com' })
+    const res = await redeemPost({ code: 'BETA-CODE', email: 'other@example.com', password: 'TestPass1!' })
     expect(res.status).toBe(400)
   })
 
@@ -157,25 +186,23 @@ describe('POST /api/v1/auth/redeem-invite', () => {
     vi.mocked(createDbClient).mockReturnValue(
       buildMockDb({ invite: makeInvite({ email: null }), createdUser: makeUser('any@test.com') }) as never,
     )
-    const res = await post({ code: 'BETA-CODE', email: 'any@test.com' })
+    const res = await redeemPost({ code: 'BETA-CODE', email: 'any@test.com', password: 'TestPass1!' })
     expect(res.status).toBe(201)
   })
 
-  it('중복 가입 → 200 + 기존 유저 token', async () => {
+  it('이미 가입된 이메일 → 400', async () => {
     const existingUser = makeUser()
     vi.mocked(createDbClient).mockReturnValue(
       buildMockDb({ existingUser }) as never,
     )
-    const res = await post({ code: 'BETA-CODE', email: 'user@example.com' })
-    expect(res.status).toBe(200)
-    const body = await res.json() as { user: { id: string } }
-    expect(body.user.id).toBe('user-uuid-1')
+    const res = await redeemPost({ code: 'BETA-CODE', email: 'user@example.com', password: 'TestPass1!' })
+    expect(res.status).toBe(400)
   })
 
   it('name 파라미터 포함 → 그 이름으로 생성', async () => {
     const mockDb = buildMockDb({})
     vi.mocked(createDbClient).mockReturnValue(mockDb as never)
-    await post({ code: 'BETA-CODE', email: 'user@example.com', name: '홍길동' })
+    await redeemPost({ code: 'BETA-CODE', email: 'user@example.com', name: '홍길동', password: 'TestPass1!' })
     expect(mockDb.users.create).toHaveBeenCalledWith(
       expect.objectContaining({ name: '홍길동' }),
     )
@@ -184,9 +211,68 @@ describe('POST /api/v1/auth/redeem-invite', () => {
   it('name 없으면 이메일 앞부분을 이름으로', async () => {
     const mockDb = buildMockDb({ invite: makeInvite({ email: null }), createdUser: makeUser('alice@example.com') })
     vi.mocked(createDbClient).mockReturnValue(mockDb as never)
-    await post({ code: 'BETA-CODE', email: 'alice@example.com' })
+    await redeemPost({ code: 'BETA-CODE', email: 'alice@example.com', password: 'TestPass1!' })
     expect(mockDb.users.create).toHaveBeenCalledWith(
       expect.objectContaining({ name: 'alice' }),
     )
+  })
+})
+
+describe('POST /api/v1/auth/login', () => {
+  it('정상 로그인 → 200 + token + user', async () => {
+    vi.mocked(createDbClient).mockReturnValue(buildMockDb({ existingUser: makeUser() }) as never)
+    vi.mocked(verifyPassword).mockResolvedValue(true)
+
+    const res = await loginPost({ email: 'user@example.com', password: 'TestPass1!' })
+    expect(res.status).toBe(200)
+    const body = await res.json() as { token: string; user: { id: string } }
+    expect(typeof body.token).toBe('string')
+    expect(body.user.id).toBe('user-uuid-1')
+  })
+
+  it('JWT 검증 가능 (HS256)', async () => {
+    vi.mocked(createDbClient).mockReturnValue(buildMockDb({ existingUser: makeUser() }) as never)
+    vi.mocked(verifyPassword).mockResolvedValue(true)
+
+    const res = await loginPost({ email: 'user@example.com', password: 'TestPass1!' })
+    const { token } = await res.json() as { token: string }
+    const payload = await verify(token, TEST_SECRET, 'HS256')
+    expect(payload.sub).toBe('user-uuid-1')
+  })
+
+  it('존재하지 않는 이메일 → 401', async () => {
+    vi.mocked(createDbClient).mockReturnValue(buildMockDb({ existingUser: null }) as never)
+
+    const res = await loginPost({ email: 'notfound@example.com', password: 'TestPass1!' })
+    expect(res.status).toBe(401)
+  })
+
+  it('비밀번호 불일치 → 401', async () => {
+    vi.mocked(createDbClient).mockReturnValue(buildMockDb({ existingUser: makeUser() }) as never)
+    vi.mocked(verifyPassword).mockResolvedValue(false)
+
+    const res = await loginPost({ email: 'user@example.com', password: 'WrongPass!' })
+    expect(res.status).toBe(401)
+  })
+
+  it('password_hash 없는 유저 → 401', async () => {
+    vi.mocked(createDbClient).mockReturnValue(
+      buildMockDb({ existingUser: makeUser('user@example.com', null) }) as never,
+    )
+
+    const res = await loginPost({ email: 'user@example.com', password: 'TestPass1!' })
+    expect(res.status).toBe(401)
+  })
+
+  it('이메일 없음 → 400', async () => {
+    vi.mocked(createDbClient).mockReturnValue(buildMockDb({}) as never)
+    const res = await loginPost({ password: 'TestPass1!' })
+    expect(res.status).toBe(400)
+  })
+
+  it('비밀번호 없음 → 400', async () => {
+    vi.mocked(createDbClient).mockReturnValue(buildMockDb({}) as never)
+    const res = await loginPost({ email: 'user@example.com' })
+    expect(res.status).toBe(400)
   })
 })
