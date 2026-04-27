@@ -40,8 +40,10 @@ function del(path: string): Promise<Response> {
 
 export const api = {
   auth: {
-    redeemInvite: (body: { code: string; email: string; name?: string }) =>
+    redeemInvite: (body: { code: string; email: string; name?: string; password: string }) =>
       post('/auth/redeem-invite', body),
+    login: (body: { email: string; password: string }) =>
+      post('/auth/login', body),
   },
   problems: {
     upload: (formData: FormData) => request('/problems', { method: 'POST', body: formData }),

@@ -3,34 +3,24 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useUserStore } from '@/stores/userStore'
 import { api } from '@/services/api'
 
-export default function SignupPage() {
+export default function LoginPage() {
   const navigate = useNavigate()
   const { setUser, setToken } = useUserStore()
 
   const [email, setEmail] = useState('')
-  const [code, setCode] = useState('')
-  const [name, setName] = useState('')
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
-
-    if (password !== confirmPassword) {
-      setError('비밀번호가 일치하지 않습니다.')
-      return
-    }
-
     setLoading(true)
 
     try {
-      const res = await api.auth.redeemInvite({ code: code.trim(), email: email.trim(), name: name.trim() || undefined, password })
+      const res = await api.auth.login({ email: email.trim(), password })
       if (!res.ok) {
-        const data = await res.json<{ error?: string }>()
-        setError(data.error ?? '가입에 실패했습니다. 다시 시도해주세요.')
+        setError('이메일 또는 비밀번호가 올바르지 않습니다.')
         return
       }
       const data = await res.json<{ token: string; user: { id: string; email: string; name: string; tier: 'free' | 'light' | 'pro'; is_beta_tester: boolean } }>()
@@ -51,7 +41,7 @@ export default function SignupPage() {
           Solvy
         </h1>
         <p style={{ textAlign: 'center', color: 'var(--ink-2)', fontSize: 'var(--text-body)', margin: '0 0 32px' }}>
-          베타 가입
+          로그인
         </p>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -59,7 +49,7 @@ export default function SignupPage() {
             <span style={labelTextStyle}>이메일</span>
             <input
               type="email"
-              data-testid="signup-email"
+              data-testid="login-email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -69,66 +59,27 @@ export default function SignupPage() {
           </label>
 
           <label style={labelStyle}>
-            <span style={labelTextStyle}>초대 코드</span>
-            <input
-              type="text"
-              data-testid="signup-code"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              required
-              placeholder="BETA-XXXX"
-              style={{ ...inputStyle, textTransform: 'uppercase', letterSpacing: '0.05em' }}
-            />
-          </label>
-
-          <label style={labelStyle}>
-            <span style={labelTextStyle}>이름 <span style={{ color: 'var(--ink-3)' }}>(선택)</span></span>
-            <input
-              type="text"
-              data-testid="signup-name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="홍길동"
-              style={inputStyle}
-            />
-          </label>
-
-          <label style={labelStyle}>
             <span style={labelTextStyle}>비밀번호</span>
             <input
               type="password"
-              data-testid="signup-password"
+              data-testid="login-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="8자 이상"
-              minLength={8}
-              style={inputStyle}
-            />
-          </label>
-
-          <label style={labelStyle}>
-            <span style={labelTextStyle}>비밀번호 확인</span>
-            <input
-              type="password"
-              data-testid="signup-confirm-password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              placeholder="비밀번호 재입력"
+              placeholder="비밀번호 입력"
               style={inputStyle}
             />
           </label>
 
           {error && (
-            <p data-testid="signup-error" style={{ color: 'var(--error, #e53e3e)', fontSize: 'var(--text-body)', margin: 0 }}>
+            <p data-testid="login-error" style={{ color: 'var(--error, #e53e3e)', fontSize: 'var(--text-body)', margin: 0 }}>
               {error}
             </p>
           )}
 
           <button
             type="submit"
-            data-testid="signup-submit"
+            data-testid="login-submit"
             disabled={loading}
             style={{
               background: 'var(--accent)',
@@ -143,20 +94,14 @@ export default function SignupPage() {
               marginTop: '8px',
             }}
           >
-            {loading ? '가입 중…' : '베타 시작하기'}
+            {loading ? '로그인 중…' : '로그인'}
           </button>
         </form>
 
         <p style={{ textAlign: 'center', color: 'var(--ink-3)', fontSize: 'var(--text-small)', marginTop: '24px' }}>
-          이미 계정이 있으신가요?{' '}
-          <Link to="/login" style={{ color: 'var(--accent)', textDecoration: 'none' }}>
-            로그인
-          </Link>
-        </p>
-        <p style={{ textAlign: 'center', color: 'var(--ink-3)', fontSize: 'var(--text-small)', marginTop: '8px' }}>
-          초대 코드가 없으신가요?{' '}
-          <Link to="/" style={{ color: 'var(--accent)', textDecoration: 'none' }}>
-            대기열 등록
+          초대 코드가 있으신가요?{' '}
+          <Link to="/signup" style={{ color: 'var(--accent)', textDecoration: 'none' }}>
+            지금 가입하기
           </Link>
         </p>
       </div>

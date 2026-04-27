@@ -7,6 +7,7 @@ import FolderPage from '@/pages/FolderPage'
 import PricingPage from '@/pages/PricingPage'
 import FoundingMemberPage from '@/pages/FoundingMemberPage'
 import LandingPage from '@/pages/LandingPage'
+import LoginPage from '@/pages/LoginPage'
 import SignupPage from '@/pages/SignupPage'
 import TermsPage from '@/pages/TermsPage'
 import FaqPage from '@/pages/FaqPage'
@@ -16,6 +17,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<TermsPage />} />
