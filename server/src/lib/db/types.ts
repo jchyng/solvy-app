@@ -76,3 +76,12 @@ export interface InviteCode {
   expires_at: string
   created_at: string
 }
+
+export interface DbUser {
+  id: string
+  email: string
+  name: string
+  tier: string
+  is_beta_tester: boolean
+  created_at: string
+}

@@ -10,6 +10,7 @@ import { folders } from './routes/folders.js'
 import { users } from './routes/users.js'
 import { webhooks } from './routes/webhooks.js'
 import { waitlist } from './routes/waitlist.js'
+import { auth } from './routes/auth.js'
 import { createDbClient } from './lib/db/client.js'
 import { checkDailyCostAndAlert } from './lib/costAlert.js'
 import { checkErrorRateAndAlert, checkAbuserAndAlert } from './lib/alerts.js'
@@ -41,6 +42,7 @@ v1.route('/users', users)
 
 app.route('/api/v1/webhooks', webhooks)
 app.route('/api/v1/waitlist', waitlist)
+app.route('/api/v1/auth', auth)
 app.route('/api/v1', v1)
 
 app.onError(errorHandler)

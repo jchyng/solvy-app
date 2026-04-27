@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Bindings } from '../../types/env.js';
-import type { ProblemSession, Conversation, Message, Folder, WaitlistEntry } from './types.js';
+import type { ProblemSession, Conversation, Message, Folder, WaitlistEntry, InviteCode, DbUser } from './types.js';
 
 export interface CreateSessionData {
   userId: string
@@ -50,6 +50,14 @@ export interface UpdateFolderData {
 }
 
 export interface DbClient {
+  inviteCodes: {
+    findByCode(code: string): Promise<InviteCode | null>
+    markUsed(id: string): Promise<void>
+  }
+  users: {
+    findByEmail(email: string): Promise<DbUser | null>
+    create(data: { email: string; name: string; is_beta_tester: boolean }): Promise<DbUser>
+  }
   waitlist: {
     register(email: string): Promise<WaitlistEntry>
     findByEmail(email: string): Promise<WaitlistEntry | null>
@@ -94,6 +102,44 @@ export function createDbClient(env: Bindings): DbClient {
   const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_KEY);
 
   return {
+    inviteCodes: {
+      async findByCode(code) {
+        const { data, error } = await supabase
+          .from('invite_codes')
+          .select()
+          .eq('code', code)
+          .maybeSingle()
+        if (error) throw new Error(error.message)
+        return data as InviteCode | null
+      },
+      async markUsed(id) {
+        const { error } = await supabase
+          .from('invite_codes')
+          .update({ used_at: new Date().toISOString() })
+          .eq('id', id)
+        if (error) throw new Error(error.message)
+      },
+    },
+    users: {
+      async findByEmail(email) {
+        const { data, error } = await supabase
+          .from('users')
+          .select()
+          .eq('email', email)
+          .maybeSingle()
+        if (error) throw new Error(error.message)
+        return data as DbUser | null
+      },
+      async create({ email, name, is_beta_tester }) {
+        const { data, error } = await supabase
+          .from('users')
+          .insert({ email, name, tier: 'free', is_beta_tester })
+          .select()
+          .single()
+        if (error) throw new Error(error.message)
+        return data as DbUser
+      },
+    },
     waitlist: {
       async register(email) {
         const { data, error } = await supabase
