@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Star, Pencil, FolderPlus } from 'lucide-react'
+import { Star, Pencil, FolderPlus, AlertTriangle } from 'lucide-react'
 import type { AnalysisResult, FollowUpQuestion } from '@/types/api'
 
 interface Props {
@@ -16,6 +16,25 @@ export function AnalysisCard({ result, onFollowUp, isFavorite, onFavoriteToggle,
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      {result.confidence < 0.8 && (
+        <div
+          data-testid="low-confidence-warning"
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '10px',
+            background: 'var(--warn-soft, #fff8e1)',
+            border: '1px solid var(--warn, #f59e0b)',
+            borderRadius: '12px',
+            padding: '12px 16px',
+          }}
+        >
+          <AlertTriangle size={16} style={{ color: 'var(--warn, #f59e0b)', flexShrink: 0, marginTop: 2 }} />
+          <p style={{ margin: 0, fontSize: 'var(--text-small)', color: 'var(--ink-2)', lineHeight: 1.5 }}>
+            AI가 이 문제를 완전히 확신하지 못합니다. 풀이 내용을 직접 검토해 주세요.
+          </p>
+        </div>
+      )}
       <div style={{ display: 'flex', gap: '8px' }}>
         <button
           data-testid="action-favorite"

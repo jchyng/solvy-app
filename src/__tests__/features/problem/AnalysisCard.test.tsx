@@ -111,4 +111,17 @@ describe('AnalysisCard', () => {
     act(() => { btn.click() })
     expect(onAddToFolder).toHaveBeenCalledOnce()
   })
+
+  it('confidence >= 0.8 이면 경고 배너를 렌더링하지 않는다', () => {
+    act(() => { root.render(<AnalysisCard result={mockResult} />) })
+    expect(container.querySelector('[data-testid="low-confidence-warning"]')).toBeNull()
+  })
+
+  it('confidence < 0.8 이면 경고 배너를 렌더링한다', () => {
+    const lowConf = { ...mockResult, confidence: 0.65 }
+    act(() => { root.render(<AnalysisCard result={lowConf} />) })
+    const warning = container.querySelector('[data-testid="low-confidence-warning"]')
+    expect(warning).not.toBeNull()
+    expect(warning?.textContent).toContain('AI가 이 문제를 완전히 확신하지 못합니다')
+  })
 })
