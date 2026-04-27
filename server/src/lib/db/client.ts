@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Bindings } from '../../types/env.js';
-import type { ProblemSession, Conversation, Message, Folder } from './types.js';
+import type { ProblemSession, Conversation, Message, Folder, WaitlistEntry } from './types.js';
 
 export interface CreateSessionData {
   userId: string
@@ -50,6 +50,11 @@ export interface UpdateFolderData {
 }
 
 export interface DbClient {
+  waitlist: {
+    register(email: string): Promise<WaitlistEntry>
+    findByEmail(email: string): Promise<WaitlistEntry | null>
+    count(): Promise<number>
+  }
   usageEvents: {
     sumCostToday(date: string): Promise<number>
     errorRateLast10Min(): Promise<{ total: number; errors: number }>
@@ -89,6 +94,42 @@ export function createDbClient(env: Bindings): DbClient {
   const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_KEY);
 
   return {
+    waitlist: {
+      async register(email) {
+        const { data, error } = await supabase
+          .from('waitlist')
+          .upsert({ email }, { onConflict: 'email', ignoreDuplicates: true })
+          .select()
+          .maybeSingle()
+        if (error) throw new Error(error.message)
+        if (!data) {
+          const { data: existing, error: err2 } = await supabase
+            .from('waitlist')
+            .select()
+            .eq('email', email)
+            .single()
+          if (err2) throw new Error(err2.message)
+          return existing as WaitlistEntry
+        }
+        return data as WaitlistEntry
+      },
+      async findByEmail(email) {
+        const { data, error } = await supabase
+          .from('waitlist')
+          .select()
+          .eq('email', email)
+          .maybeSingle()
+        if (error) throw new Error(error.message)
+        return data as WaitlistEntry | null
+      },
+      async count() {
+        const { count, error } = await supabase
+          .from('waitlist')
+          .select('*', { count: 'exact', head: true })
+        if (error) throw new Error(error.message)
+        return count ?? 0
+      },
+    },
     usageEvents: {
       async sumCostToday(date) {
         const start = `${date}T00:00:00.000Z`

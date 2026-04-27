@@ -59,3 +59,20 @@ export interface ConversationFolder {
   conversation_id: string
   folder_id: string
 }
+
+export interface WaitlistEntry {
+  id: string
+  email: string
+  invited_at: string | null
+  joined_at: string | null
+  created_at: string
+}
+
+export interface InviteCode {
+  id: string
+  code: string
+  email: string | null
+  used_at: string | null
+  expires_at: string
+  created_at: string
+}
