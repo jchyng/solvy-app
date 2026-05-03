@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Star, Pencil, FolderPlus, AlertTriangle } from 'lucide-react'
 import type { AnalysisResult, FollowUpQuestion } from '@/types/api'
 
+const DEEPER_CHIP: FollowUpQuestion = { id: 'deeper', label: '이 개념 더 깊이 이해하고 싶어요' }
+
 interface Props {
   result: AnalysisResult
   onFollowUp?: (q: FollowUpQuestion) => void
@@ -140,22 +142,28 @@ export function AnalysisCard({ result, onFollowUp, isFavorite, onFavoriteToggle,
       )}
 
       {/* 꼬리 질문 칩 */}
-      {result.follow_up_questions.length > 0 && (
-        <section data-testid="chip-area">
-          <h3 style={sectionTitle}>더 알아보기</h3>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {result.follow_up_questions.map((q) => (
-              <button
-                key={q.id}
-                onClick={() => onFollowUp?.(q)}
-                style={chipBtn}
-              >
-                {q.label}
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
+      <section data-testid="chip-area">
+        <h3 style={sectionTitle}>더 알아보기</h3>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+          {result.follow_up_questions.map((q) => (
+            <button
+              key={q.id}
+              onClick={() => onFollowUp?.(q)}
+              style={chipBtn}
+            >
+              {q.label}
+            </button>
+          ))}
+          <button
+            key="deeper"
+            data-testid="chip-deeper"
+            onClick={() => onFollowUp?.(DEEPER_CHIP)}
+            style={deeperChipBtn}
+          >
+            {DEEPER_CHIP.label}
+          </button>
+        </div>
+      </section>
     </div>
   )
 }
@@ -206,6 +214,16 @@ const chipBtn: React.CSSProperties = {
   background: 'var(--bg-sunken)',
   color: 'var(--accent)',
   border: '1px solid var(--accent)',
+  borderRadius: '20px',
+  padding: '8px 16px',
+  fontSize: 'var(--text-small)',
+  cursor: 'pointer',
+}
+
+const deeperChipBtn: React.CSSProperties = {
+  background: 'var(--bg-sunken)',
+  color: 'var(--ink-2)',
+  border: '1px dashed var(--ink-3)',
   borderRadius: '20px',
   padding: '8px 16px',
   fontSize: 'var(--text-small)',

@@ -74,6 +74,7 @@ export default function ChatPage() {
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const userMsgCountRef = useRef(0)
   const token = useUserStore((s) => s.token)
 
   useEffect(() => {
@@ -86,7 +87,9 @@ export default function ChatPage() {
         return r.json() as Promise<ConversationWithMessages>
       })
       .then((data) => {
-        setMessages(Array.isArray(data.messages) ? data.messages : [])
+        const msgs = Array.isArray(data.messages) ? data.messages : []
+        setMessages(msgs)
+        userMsgCountRef.current = msgs.filter((m) => m.role === 'user').length
         setIsFavorite(data.is_favorite)
         setConvTitle(data.title)
         setLoading(false)
@@ -192,6 +195,13 @@ export default function ChatPage() {
         }
         setMessages((prev) => [...prev, assistantMsg])
         setStreamingContent('')
+        userMsgCountRef.current += 1
+        try {
+          posthog.capture('chat_message_sent', {
+            conversationId: id,
+            userMessageCount: userMsgCountRef.current,
+          })
+        } catch { /* posthog 미초기화 환경 무시 */ }
       } catch (err) {
         setStreamError(err instanceof Error ? err.message : 'AI 응답 오류')
         setLastFailed({ content, key })
@@ -213,6 +223,11 @@ export default function ChatPage() {
     if (isSimilarQuestion(q)) {
       setShowDifficultySelector(true)
       return
+    }
+    if (q.id === 'deeper') {
+      try {
+        posthog.capture('deep_dive_requested', { conversationId: id })
+      } catch { /* posthog 미초기화 환경 무시 */ }
     }
     sendMessage(q.label)
   }

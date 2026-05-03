@@ -340,4 +340,107 @@ describe('ChatPage', () => {
     expect(container.querySelector('[data-testid="feedback-bar"]')).toBeNull()
     expect(mockPosthogCapture).toHaveBeenCalledWith('analysis_helpful', expect.objectContaining({ helpful: true }))
   })
+
+  it('메시지 전송 성공 시 chat_message_sent 이벤트 발화', async () => {
+    const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set
+    vi.stubGlobal(
+      'fetch',
+      vi.fn()
+        .mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.resolve(makeConvResponse()), body: null })
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          body: sseStream(['data: {"type":"done","message_id":"m99","follow_up_questions":[]}']),
+        }),
+    )
+
+    await act(async () => { root.render(<ChatPage />) })
+    await act(async () => { await Promise.resolve() })
+
+    const input = container.querySelector('[data-testid="chat-input"]') as HTMLInputElement
+    const sendBtn = container.querySelector('[data-testid="send-btn"]') as HTMLButtonElement
+
+    await act(async () => {
+      nativeSetter?.call(input, '왜 양변을 제곱해요?')
+      input.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    await act(async () => { sendBtn.click() })
+    await act(async () => { await Promise.resolve() })
+    await act(async () => { await Promise.resolve() })
+    await act(async () => { await Promise.resolve() })
+
+    expect(mockPosthogCapture).toHaveBeenCalledWith('chat_message_sent', expect.objectContaining({
+      conversationId: CONV_ID,
+      userMessageCount: 1,
+    }))
+  })
+
+  it('연속 메시지 전송 시 userMessageCount가 증가한다', async () => {
+    const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set
+    const doneEvent = 'data: {"type":"done","message_id":"m99","follow_up_questions":[]}'
+    vi.stubGlobal(
+      'fetch',
+      vi.fn()
+        .mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.resolve(makeConvResponse()), body: null })
+        .mockResolvedValueOnce({ ok: true, status: 200, body: sseStream([doneEvent]) })
+        .mockResolvedValueOnce({ ok: true, status: 200, body: sseStream([doneEvent]) }),
+    )
+
+    await act(async () => { root.render(<ChatPage />) })
+    await act(async () => { await Promise.resolve() })
+
+    const input = container.querySelector('[data-testid="chat-input"]') as HTMLInputElement
+    const sendBtn = container.querySelector('[data-testid="send-btn"]') as HTMLButtonElement
+
+    // 첫 번째 메시지
+    await act(async () => {
+      nativeSetter?.call(input, '질문1')
+      input.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    await act(async () => { sendBtn.click() })
+    await act(async () => { await Promise.resolve() })
+    await act(async () => { await Promise.resolve() })
+    await act(async () => { await Promise.resolve() })
+
+    // 두 번째 메시지
+    await act(async () => {
+      nativeSetter?.call(input, '질문2')
+      input.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    await act(async () => { sendBtn.click() })
+    await act(async () => { await Promise.resolve() })
+    await act(async () => { await Promise.resolve() })
+    await act(async () => { await Promise.resolve() })
+
+    const calls = mockPosthogCapture.mock.calls.filter(([name]) => name === 'chat_message_sent')
+    expect(calls).toHaveLength(2)
+    expect(calls[0][1]).toMatchObject({ userMessageCount: 1 })
+    expect(calls[1][1]).toMatchObject({ userMessageCount: 2 })
+  })
+
+  it('스트리밍 에러 시 chat_message_sent 미발화', async () => {
+    const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set
+    vi.stubGlobal(
+      'fetch',
+      vi.fn()
+        .mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.resolve(makeConvResponse()), body: null })
+        .mockResolvedValueOnce({ ok: false, status: 500, body: null }),
+    )
+
+    await act(async () => { root.render(<ChatPage />) })
+    await act(async () => { await Promise.resolve() })
+
+    const input = container.querySelector('[data-testid="chat-input"]') as HTMLInputElement
+    const sendBtn = container.querySelector('[data-testid="send-btn"]') as HTMLButtonElement
+
+    await act(async () => {
+      nativeSetter?.call(input, '질문 하나')
+      input.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    await act(async () => { sendBtn.click() })
+    await act(async () => { await Promise.resolve() })
+
+    const chatSentCalls = mockPosthogCapture.mock.calls.filter(([name]) => name === 'chat_message_sent')
+    expect(chatSentCalls).toHaveLength(0)
+  })
 })

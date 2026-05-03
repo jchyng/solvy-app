@@ -67,10 +67,26 @@ describe('AnalysisCard', () => {
     expect(container.textContent).toContain('근의 공식으로 풀면?')
   })
 
-  it('follow_up_questions가 빈 배열이면 chip-area를 렌더링하지 않는다', () => {
+  it('follow_up_questions가 빈 배열이어도 chip-area는 렌더링된다 (deeper 칩 항상 존재)', () => {
     const noChips = { ...mockResult, follow_up_questions: [] }
     act(() => { root.render(<AnalysisCard result={noChips} />) })
-    expect(container.querySelector('[data-testid="chip-area"]')).toBeNull()
+    expect(container.querySelector('[data-testid="chip-area"]')).not.toBeNull()
+    expect(container.textContent).toContain('이 개념 더 깊이 이해하고 싶어요')
+  })
+
+  it('chip-area에 "이 개념 더 깊이 이해하고 싶어요" 칩이 항상 포함된다', () => {
+    act(() => { root.render(<AnalysisCard result={mockResult} />) })
+    expect(container.querySelector('[data-testid="chip-deeper"]')).not.toBeNull()
+    expect(container.textContent).toContain('이 개념 더 깊이 이해하고 싶어요')
+  })
+
+  it('deeper 칩 클릭 시 onFollowUp({ id: "deeper", ... }) 호출', () => {
+    const onFollowUp = vi.fn()
+    act(() => { root.render(<AnalysisCard result={mockResult} onFollowUp={onFollowUp} />) })
+    const deeperBtn = container.querySelector('[data-testid="chip-deeper"]') as HTMLButtonElement
+    act(() => { deeperBtn.click() })
+    expect(onFollowUp).toHaveBeenCalledOnce()
+    expect(onFollowUp).toHaveBeenCalledWith(expect.objectContaining({ id: 'deeper' }))
   })
 
   it('콜백 없이 렌더링 시 액션 버튼 3개가 disabled', () => {
