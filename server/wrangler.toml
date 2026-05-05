@@ -8,7 +8,7 @@ ENVIRONMENT = "development"
 
 [[kv_namespaces]]
 binding = "RATE_LIMIT_KV"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"        # wrangler deploy 전에 실제 ID로 교체
+id = "local-dev-placeholder"
 preview_id = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"  # wrangler dev 로컬 KV 시뮬레이션용
 
 # Phase 1 (dev): wrangler dev가 .wrangler/state/v3/r2/ 에 로컬로 시뮬레이션
